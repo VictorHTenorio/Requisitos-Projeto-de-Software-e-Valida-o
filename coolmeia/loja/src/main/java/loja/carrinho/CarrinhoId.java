@@ -1,17 +1,15 @@
-package loja.produto;
+package loja.carrinho;
 
 import org.jmolecules.ddd.types.Identifier;
 import org.jmolecules.ddd.types.ValueObject;
 import static org.apache.commons.lang3.Validate.isTrue;
-
 import java.util.Objects;
 
-public class ProdutoId implements ValueObject, Identifier{
+public class CarrinhoId implements ValueObject, Identifier{
 	private final int id;
 	
-	public ProdutoId(int id) {
-		isTrue(id>0, "O id deve ser positivo");
-		
+	public CarrinhoId(int id) {
+		isTrue(id>0,"O id não pode ser menor que 0");
 		this.id = id;
 	}
 	
@@ -21,8 +19,8 @@ public class ProdutoId implements ValueObject, Identifier{
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && obj instanceof ProdutoId) {
-			var autorId = (ProdutoId) obj;
+		if (obj != null && obj instanceof CarrinhoId) {
+			var autorId = (CarrinhoId) obj;
 			return id == autorId.id;
 		}
 		return false;

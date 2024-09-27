@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 
 public class Cor implements ValueObject{
-	private String nome;
-	private String hex;
+	private final String nome;
+	private final String hex;
 	private static final Pattern HEX_PATTERN = Pattern.compile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
 	
 	public Cor(String nome, String hex) {

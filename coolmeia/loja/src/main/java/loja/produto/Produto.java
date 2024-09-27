@@ -14,6 +14,10 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 	
 	public Produto(String nome, String descricao, int quantidade, float valor) {
 		this.id = null;
+		setNome(nome);
+		setDescricao(descricao);
+		setQuantidade(quantidade);
+		setValor(valor);
 	}
 	
 	public Produto(ProdutoId id, String nome, String descricao, int quantidade, float valor) {

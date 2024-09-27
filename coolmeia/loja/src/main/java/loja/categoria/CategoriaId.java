@@ -1,4 +1,4 @@
-package loja.produto;
+package loja.categoria;
 
 import org.jmolecules.ddd.types.Identifier;
 import org.jmolecules.ddd.types.ValueObject;
@@ -6,23 +6,23 @@ import static org.apache.commons.lang3.Validate.isTrue;
 
 import java.util.Objects;
 
-public class ProdutoId implements ValueObject, Identifier{
+public class CategoriaId implements ValueObject, Identifier{
 	private final int id;
 	
-	public ProdutoId(int id) {
-		isTrue(id>0, "O id deve ser positivo");
+	public CategoriaId(int id) {
+		isTrue(id>0, "O id não pode ser menor que 0");
 		
 		this.id = id;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && obj instanceof ProdutoId) {
-			var autorId = (ProdutoId) obj;
+		if (obj != null && obj instanceof CategoriaId) {
+			var autorId = (CategoriaId) obj;
 			return id == autorId.id;
 		}
 		return false;
