@@ -6,4 +6,21 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>loja</artifactId>
+  <dependencies>
+	<dependency>
+	  <groupId>commons-validator</groupId>
+	  <artifactId>commons-validator</artifactId>
+	  <version>1.9.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-lang3</artifactId>
+	    <version>3.15.0</version>
+	</dependency>
+  	<dependency>
+	  <groupId>org.jmolecules</groupId>
+	  <artifactId>jmolecules-ddd</artifactId>
+	  <version>1.9.0</version>
+	</dependency>
+  </dependencies>
 </project>
