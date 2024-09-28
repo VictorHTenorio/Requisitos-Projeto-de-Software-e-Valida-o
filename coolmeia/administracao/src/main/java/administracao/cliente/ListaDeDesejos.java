@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.jmolecules.ddd.types.ValueObject;
-
 import loja.produto.ProdutoId;
 
 import static org.apache.commons.lang3.Validate.notNull;

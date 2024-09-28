@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.jmolecules.ddd.types.AggregateRoot;
+
+import comum.administracao.cliente.Endereco;
 import loja.carrinho.CarrinhoId;
 import loja.produto.ProdutoId;
 import static org.apache.commons.lang3.Validate.notNull;

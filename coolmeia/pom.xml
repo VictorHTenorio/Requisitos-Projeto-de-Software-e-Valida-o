@@ -23,7 +23,7 @@
 
     <!-- Listagem dos Submódulos -->
     <modules>
-        <module>common</module>
+        <module>comum</module>
         <module>loja</module>
         <module>loja-bdd</module>
         <module>administracao</module>

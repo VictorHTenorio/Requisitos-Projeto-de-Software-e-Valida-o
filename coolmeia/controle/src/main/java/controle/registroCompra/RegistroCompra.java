@@ -3,10 +3,9 @@ package controle.registroCompra;
 import org.jmolecules.ddd.types.AggregateRoot;
 
 import administracao.cliente.ClienteId;
+import loja.compra.CompraId;
 
 import static org.apache.commons.lang3.Validate.notNull;
-
-import loja.compra.CompraId;
 
 public class RegistroCompra implements Cloneable, AggregateRoot<RegistroCompra, RegistroCompraId> {
     private final RegistroCompraId id;

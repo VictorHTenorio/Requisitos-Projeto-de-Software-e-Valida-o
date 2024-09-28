@@ -2,7 +2,7 @@ package loja.compra;
 
 import org.jmolecules.ddd.types.AggregateRoot;
 
-import administracao.cliente.Endereco;
+import comum.administracao.cliente.Endereco;
 import loja.carrinho.CarrinhoId;
 
 import static org.apache.commons.lang3.Validate.notNull;

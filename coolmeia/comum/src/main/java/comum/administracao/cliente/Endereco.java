@@ -1,4 +1,4 @@
-package administracao.cliente;
+package comum.administracao.cliente;
 
 import org.jmolecules.ddd.types.ValueObject;
 import static org.apache.commons.lang3.Validate.notNull;

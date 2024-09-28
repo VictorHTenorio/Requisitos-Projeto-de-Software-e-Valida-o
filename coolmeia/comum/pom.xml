@@ -5,9 +5,9 @@
     <artifactId>coolmeia</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>common</artifactId>
+  <artifactId>comum</artifactId>
   <dependencies>
-  	<dependency>
+	<dependency>
 	  <groupId>commons-validator</groupId>
 	  <artifactId>commons-validator</artifactId>
 	  <version>1.9.0</version>
@@ -23,4 +23,20 @@
 	  <version>1.9.0</version>
 	</dependency>
   </dependencies>
+  
+   <build>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-maven-plugin</artifactId>
+	            <executions>
+	                <execution>
+	                    <id>repackage</id>
+	                    <phase>none</phase>
+	                </execution>
+	            </executions>
+	        </plugin>
+	    </plugins>
+	</build>
+
 </project>
