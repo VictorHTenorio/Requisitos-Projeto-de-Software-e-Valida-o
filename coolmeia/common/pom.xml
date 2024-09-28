@@ -5,7 +5,7 @@
     <artifactId>coolmeia</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>administracao</artifactId>
+  <artifactId>common</artifactId>
   <dependencies>
   	<dependency>
 	  <groupId>commons-validator</groupId>
@@ -22,10 +22,5 @@
 	  <artifactId>jmolecules-ddd</artifactId>
 	  <version>1.9.0</version>
 	</dependency>
-  	<dependency>
-  		<groupId>com.example</groupId>
-  		<artifactId>common</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
   </dependencies>
 </project>

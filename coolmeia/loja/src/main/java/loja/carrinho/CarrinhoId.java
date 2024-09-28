@@ -20,8 +20,8 @@ public class CarrinhoId implements ValueObject, Identifier{
 	@Override
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof CarrinhoId) {
-			var autorId = (CarrinhoId) obj;
-			return id == autorId.id;
+			var carrinhoId = (CarrinhoId) obj;
+			return id == carrinhoId.id;
 		}
 		return false;
 	}
