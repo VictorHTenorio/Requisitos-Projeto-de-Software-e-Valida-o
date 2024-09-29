@@ -3,14 +3,12 @@ package loja.carrinho;
 import java.util.ArrayList;
 import java.util.List;
 import org.jmolecules.ddd.types.AggregateRoot;
-import loja.item.ItemId;
 import static org.apache.commons.lang3.Validate.notNull;
-import static org.apache.commons.lang3.Validate.isTrue;
 
 public class Carrinho implements Cloneable, AggregateRoot<Carrinho, CarrinhoId>{
 	private final CarrinhoId id;
 	private float valorTotal;
-	private List<ItemId>itens;
+	private List<Item>itens;
 	
 	public Carrinho() {
         this.id = null;
@@ -34,17 +32,17 @@ public class Carrinho implements Cloneable, AggregateRoot<Carrinho, CarrinhoId>{
         return valorTotal;
     }
 
-    public List<ItemId> getItens() {
+    public List<Item> getItens() {
         return new ArrayList<>(itens);
     }
 
-    public void adicionarItem(ItemId item, float valor) {
+    public void adicionarItem(Item item, float valor) {
         notNull(item, "O item não pode ser nulo");
         itens.add(item);
         atualizarValorTotal(valor);
     }
 
-    public void removerItem(ItemId item, float valor) {
+    public void removerItem(Item item, float valor) {
         notNull(item, "O item não pode ser nulo");
         if (itens.remove(item)) {
             atualizarValorTotal(-valor);

@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.example</groupId>
+    <artifactId>coolmeia</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>administracao</artifactId>
+  
+  <dependencies>
+  	<dependency>
+	  <groupId>commons-validator</groupId>
+	  <artifactId>commons-validator</artifactId>
+	  <version>1.9.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-lang3</artifactId>
+	    <version>3.15.0</version>
+	</dependency>
+  	<dependency>
+	  <groupId>org.jmolecules</groupId>
+	  <artifactId>jmolecules-ddd</artifactId>
+	  <version>1.9.0</version>
+	</dependency>
+  	<dependency>
+  		<groupId>com.example</groupId>
+  		<artifactId>loja</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.example</groupId>
+  		<artifactId>comum</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
+  
+   <build>
+	    <plugins>
+	        <plugin>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-maven-plugin</artifactId>
+	            <executions>
+	                <execution>
+	                    <id>repackage</id>
+	                    <phase>none</phase>
+	                </execution>
+	            </executions>
+	        </plugin>
+	    </plugins>
+	</build>
+</project>
