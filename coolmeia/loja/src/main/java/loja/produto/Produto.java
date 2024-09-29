@@ -76,6 +76,16 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 		return valor;
 	}
 	
+	public void diminuirQuantidade(int quantidadeCompra) {
+	    isTrue(quantidade - quantidadeCompra >= 0, "A quantidade comprada não pode ser maior que o estoque");
+	    this.quantidade -= quantidadeCompra;
+	}
+	
+	public void aumentarQuantidade(int quantidadeAdicionada) {
+	    isTrue(quantidadeAdicionada > 0, "A quantidade não pode ser negativa");
+	    this.quantidade -= quantidadeAdicionada;
+	}
+	
 	@Override
 	public Produto clone() {
 		try {

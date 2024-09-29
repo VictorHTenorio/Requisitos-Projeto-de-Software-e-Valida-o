@@ -7,19 +7,26 @@ import loja.compra.CompraId;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.time.LocalDateTime;
+
 public class RegistroCompra implements Cloneable, AggregateRoot<RegistroCompra, RegistroCompraId> {
     private final RegistroCompraId id;
+    private final LocalDateTime dataHoraRealizacao;
     private CompraId compra;
     private ClienteId cliente;
 
     public RegistroCompra(CompraId compra, ClienteId cliente) {
         this.id = null;
+        this.dataHoraRealizacao = LocalDateTime.now();
         setCompra(compra);
         setCliente(cliente);
     }
 
-    public RegistroCompra(RegistroCompraId id, CompraId compra, ClienteId cliente) {
-        this.id = notNull(id, "O ID do registro de compra não pode ser nulo.");
+    public RegistroCompra(RegistroCompraId id, LocalDateTime dataHoraRealizacao, CompraId compra, ClienteId cliente) {
+    	notNull(id, "O ID do registro de compra não pode ser nulo.");
+    	notNull(dataHoraRealizacao, "A dataHora de ralizacao não pode ser nula.");
+        this.id = id;
+        this.dataHoraRealizacao = dataHoraRealizacao;
         setCompra(compra);
         setCliente(cliente);
     }
@@ -27,6 +34,10 @@ public class RegistroCompra implements Cloneable, AggregateRoot<RegistroCompra, 
     @Override
     public RegistroCompraId getId() {
         return id;
+    }
+    
+    public LocalDateTime getDataHoraRealizacao() {
+    	return dataHoraRealizacao;
     }
 
     public CompraId getCompra() {
@@ -60,6 +71,7 @@ public class RegistroCompra implements Cloneable, AggregateRoot<RegistroCompra, 
     public String toString() {
         return "RegistroCompra{" +
                 "id=" + id +
+                ", dataHoraCompra=" + dataHoraRealizacao +
                 ", compra=" + compra +
                 ", cliente=" + cliente +
                 '}';

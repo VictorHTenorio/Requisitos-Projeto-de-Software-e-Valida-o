@@ -8,7 +8,7 @@ import org.junit.platform.suite.api.SelectPackages;
 import org.junit.platform.suite.api.Suite;
 @Suite
 @IncludeEngines("cucumber")
-@SelectPackages("com.example.coolmeia.steps")
+@SelectPackages("com.example.coolmeia.loja")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty")
 public class RunCucumberTest {
 }

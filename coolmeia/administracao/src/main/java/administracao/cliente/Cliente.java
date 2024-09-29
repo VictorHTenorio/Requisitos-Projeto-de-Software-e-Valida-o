@@ -114,7 +114,7 @@ public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId> {
         this.nascimento = nascimento;
     }
 
-    private void setCarrinhoId(CarrinhoId carrinhoId) {
+    public void setCarrinhoId(CarrinhoId carrinhoId) {
         notNull(carrinhoId, "O carrinho não pode ser nulo");
         this.carrinhoId = carrinhoId;
     }

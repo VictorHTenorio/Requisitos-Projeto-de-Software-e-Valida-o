@@ -1,12 +1,15 @@
 package administracao.cliente;
 
 import org.jmolecules.ddd.types.ValueObject;
+
+import loja.pagamento.MetodoPagamento;
+
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.apache.commons.lang3.Validate.notBlank;
 import java.util.Objects;
 import static org.apache.commons.lang3.Validate.isTrue;
 
-public class Cartao implements ValueObject {
+public class Cartao implements ValueObject, MetodoPagamento{
     private final String nome;
     private final String numero;
     private final String validade;
@@ -78,4 +81,15 @@ public class Cartao implements ValueObject {
     public String toString() {
         return String.format("Cartão de Crédito de %s: %s, Válido até: %s", nome, numero, validade);
     }
+
+	@Override
+	public boolean processarPagamento() {
+		System.out.println("Pagamento via cartão processado com sucesso.");
+		return true;
+	}
+
+	@Override
+	public String getMetodo() {
+		return toString();
+	}
 }

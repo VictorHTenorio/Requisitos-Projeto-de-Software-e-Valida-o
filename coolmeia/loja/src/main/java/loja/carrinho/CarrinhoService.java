@@ -24,4 +24,11 @@ public class CarrinhoService {
 		
 		return carrinhoRepository.obter(id);
 	}
+	
+	public CarrinhoId criarNovoCarrinho() {
+		Carrinho novoCarrinho = new Carrinho();
+		novoCarrinho = carrinhoRepository.salvar(novoCarrinho);
+		
+		return novoCarrinho.getId();
+	}
 }

@@ -16,11 +16,11 @@ public class Carrinho implements Cloneable, AggregateRoot<Carrinho, CarrinhoId>{
         this.valorTotal = 0.0f;
     }
 	
-	public Carrinho(CarrinhoId id) {
+	public Carrinho(CarrinhoId id, List<Item> itens, float valorTotal) {
         notNull(id, "O ID do carrinho não pode ser nulo");
         this.id = id;
-        this.itens = new ArrayList<>();
-        this.valorTotal = 0.0f;
+        this.itens = new ArrayList<>(itens);
+        this.valorTotal = valorTotal;
     }
 	
 	@Override
