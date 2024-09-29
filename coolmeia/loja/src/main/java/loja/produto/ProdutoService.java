@@ -1,7 +1,12 @@
 package loja.produto;
 
 import static org.apache.commons.lang3.Validate.notNull;
+
+import java.util.List;
+
 import org.jmolecules.ddd.annotation.Service;
+
+import loja.categoria.Categoria;
 
 @Service
 public class ProdutoService {
@@ -30,4 +35,9 @@ public class ProdutoService {
 		
 		return produtoRepository.excluir(id);
 	}
+	
+	 public List<Produto> obterProdutosPorCategoria(Categoria categoria) {
+	        notNull(categoria, "A categoria não pode ser nula");
+	        return produtoRepository.obterPorCategoria(categoria);
+	    }
 }
