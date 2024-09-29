@@ -22,6 +22,17 @@ public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId> {
     private List<Endereco> enderecos;
     private List<Cartao> cartoes;
 
+    public Cliente(ClienteId id, String nome, String email, CarrinhoId carrinho) { //sem cadastro
+    	notNull(id, "O id não pode ser nulo");
+    	this.id = id;
+        setNome(nome);
+        setEmail(email);
+        setCarrinhoId(carrinho);
+        this.listaDeDesejos = null;
+        this.enderecos = new ArrayList<>();
+        this.cartoes = new ArrayList<>();
+    }
+    
     public Cliente(String nome, String email, String senha, Date nascimento, CarrinhoId carrinho) {
         this.id = null;
         setNome(nome);
@@ -34,13 +45,14 @@ public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId> {
         this.cartoes = new ArrayList<>();
     }
 
-    public Cliente(ClienteId id, String nome, String email, String senha, Date nascimento) {
-        this.id = id;
+    public Cliente(ClienteId id, String nome, String email, String senha, Date nascimento, CarrinhoId carrinho) {
+    	notNull(id, "O id não pode ser nulo");
+    	this.id = id;
         setNome(nome);
         setEmail(email);
         setSenha(senha);
         setNascimento(nascimento);
-        this.carrinhoId = null;
+        setCarrinhoId(carrinho);
         this.listaDeDesejos = new ListaDeDesejos();
         this.enderecos = new ArrayList<>();
         this.cartoes = new ArrayList<>();

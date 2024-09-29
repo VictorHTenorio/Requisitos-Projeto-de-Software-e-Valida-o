@@ -23,8 +23,8 @@ public class CupomCodigo implements ValueObject, Identifier{
 	public boolean equals(Object obj) {
 		if (obj != null && obj instanceof CupomCodigo) {
 			var cupomId = (CupomCodigo) obj;
-			return codigo == cupomId.codigo;
-		}
+			return codigo.equals(cupomId.codigo);
+		} 
 		return false;
 	}	
 

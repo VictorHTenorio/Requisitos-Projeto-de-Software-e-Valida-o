@@ -52,7 +52,6 @@ public class Carrinho implements Cloneable, AggregateRoot<Carrinho, CarrinhoId>{
     }
 
     private void atualizarValorTotal(float valor) {
-    	isTrue(valor>0,"O valor deve ser maior que 0");
         this.valorTotal += valor;
     }
 

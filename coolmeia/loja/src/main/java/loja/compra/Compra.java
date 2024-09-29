@@ -22,7 +22,8 @@ public class Compra implements Cloneable, AggregateRoot<Compra, CompraId> {
     }
 
     public Compra(CompraId id, CarrinhoId carrinhoId, Endereco enderecoEntrega, float frete) {
-        this.id = id;
+    	notNull(id, "O id não pode ser nulo");
+    	this.id = id;
         setCarrinhoId(carrinhoId);
         setEnderecoEntrega(enderecoEntrega);
         setFrete(frete);
