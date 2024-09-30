@@ -1,7 +1,7 @@
 package loja.produto;
 
 import java.util.List;
-import loja.categoria.Categoria;
+import loja.categoria.CategoriaId;
 
 public interface ProdutoRepository {
 	Produto salvar(Produto produto);
@@ -10,5 +10,5 @@ public interface ProdutoRepository {
 	
 	boolean excluir(ProdutoId id);
 	
-	List<Produto> obterPorCategoria(Categoria categoria);
+	List<Produto> obterPorCategoria(CategoriaId categoria);
 }

@@ -5,8 +5,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import java.util.List;
 
 import org.jmolecules.ddd.annotation.Service;
-
-import loja.categoria.Categoria;
+import loja.categoria.CategoriaId;
 
 @Service
 public class ProdutoService {
@@ -36,7 +35,7 @@ public class ProdutoService {
 		return produtoRepository.excluir(id);
 	}
 	
-	 public List<Produto> obterProdutosPorCategoria(Categoria categoria) {
+	 public List<Produto> obterProdutosPorCategoria(CategoriaId categoria) {
 	        notNull(categoria, "A categoria não pode ser nula");
 	        return produtoRepository.obterPorCategoria(categoria);
 	    }

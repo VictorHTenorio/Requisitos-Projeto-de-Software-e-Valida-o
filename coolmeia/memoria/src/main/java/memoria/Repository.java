@@ -3,6 +3,8 @@ package memoria;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import static org.apache.commons.lang3.Validate.notNull;
 import administracao.cliente.Cliente;
 import administracao.cliente.ClienteId;
@@ -38,7 +40,6 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
 	@Override
 	public Cliente salvar(Cliente cliente) {
 		notNull(cliente, "O cliente não pode ser nulo");
-		
 		return clientes.put(cliente.getId(), cliente);
 	}
 
@@ -139,22 +140,23 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
 	
 	/*-----------------------------Cupom------------------------------------------*/
 	
+	private Map<CupomCodigo, Cupom> cupons = new HashMap<>();
 	@Override
 	public Cupom salvar(Cupom cupom) {
-		// TODO Auto-generated method stub
-		return null;
+		notNull(cupom,"O cupom não pode ser nulo");
+		return cupons.put(cupom.getId(), cupom);
 	}
 
 	@Override
 	public Cupom obter(CupomCodigo codigo) {
-		// TODO Auto-generated method stub
-		return null;
+		notNull(codigo,"O codigo do cupom não pode ser nulo");
+		return cupons.get(codigo);
 	}
 
 	@Override
 	public boolean excluir(CupomCodigo codigo) {
-		// TODO Auto-generated method stub
-		return false;
+		notNull(codigo,"O codigo do cupom não pode ser nulo");
+		return cupons.remove(codigo) != null;
 	}
 	
 	/*-----------------------------Produto------------------------------------------*/
@@ -164,7 +166,7 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
         notNull(produto, "O produto não pode ser nulo");
         if (produto.getId() == null) {
             ProdutoId novoId = new ProdutoId(produtoIdCounter++);
-            produto = new Produto(novoId, produto.getNome(), produto.getDescricao(),produto.getQuantidade(),produto.getValor());
+            produto = new Produto(novoId, produto.getNome(), produto.getDescricao(),produto.getQuantidade(),produto.getValor(), produto.getCores(), produto.getCategorias());
         }
         produtos.put(produto.getId(), produto);
         return produto;
@@ -183,10 +185,12 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
     }
 
 	@Override
-	public List<Produto> obterPorCategoria(Categoria categoria) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public List<Produto> obterPorCategoria(CategoriaId categoriaId) {
+        notNull(categoriaId, "O id da categoria não pode ser nulo");
+        return produtos.values().stream()
+                .filter(produto -> produto.getCategorias().contains(categoriaId))
+                .collect(Collectors.toList());
+    }
 	
 	
 	
