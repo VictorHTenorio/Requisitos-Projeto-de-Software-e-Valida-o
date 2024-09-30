@@ -50,6 +50,10 @@ public class Compra implements Cloneable, AggregateRoot<Compra, CompraId> {
         return enderecoEntrega;
     }
     
+    public MetodoPagamento getMetodoPagamento() {
+    	return pagamento;
+    }
+    
     public String getPagamento() {
     	return pagamento.getMetodo();
     }

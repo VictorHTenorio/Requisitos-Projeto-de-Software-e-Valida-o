@@ -1,4 +1,4 @@
-package steps;
+package loja.carrinho;
 
 import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 

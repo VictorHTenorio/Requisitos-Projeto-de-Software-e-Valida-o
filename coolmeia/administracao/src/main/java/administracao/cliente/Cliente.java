@@ -32,18 +32,6 @@ public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId> {
         this.enderecos = new ArrayList<>();
         this.cartoes = new ArrayList<>();
     }
-    
-    public Cliente(String nome, String email, String senha, Date nascimento, CarrinhoId carrinho) {
-        this.id = null;
-        setNome(nome);
-        setEmail(email);
-        setSenha(senha);
-        setNascimento(nascimento);
-        setCarrinhoId(carrinho);
-        this.listaDeDesejos = new ListaDeDesejos();
-        this.enderecos = new ArrayList<>();
-        this.cartoes = new ArrayList<>();
-    }
 
     public Cliente(ClienteId id, String nome, String email, String senha, Date nascimento, CarrinhoId carrinho) {
     	notNull(id, "O id não pode ser nulo");

@@ -28,6 +28,7 @@
         <module>loja-bdd</module>
         <module>administracao</module>
         <module>controle</module>
+        <module>memoria</module>
     </modules>
 
     <properties>
