@@ -52,6 +52,11 @@ public class Carrinho implements Cloneable, AggregateRoot<Carrinho, CarrinhoId>{
     private void atualizarValorTotal(float valor) {
         this.valorTotal += valor;
     }
+    
+    public void setValorTotal(float valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
 
     @Override
     public Carrinho clone() {

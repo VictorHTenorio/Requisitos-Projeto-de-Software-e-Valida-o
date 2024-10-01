@@ -49,19 +49,23 @@ public class CarrinhoService {
 	public boolean aplicarCupom(CupomCodigo cupomCodigo, CarrinhoId carrinhoId) {
 	    notNull(cupomCodigo, "O código do cupom não pode ser nulo");
 	    notNull(carrinhoId, "O id do carrinho não pode ser nulo");
-	    
+
 	    Cupom cupom = cupomService.obter(cupomCodigo);
 	    Carrinho carrinho = carrinhoRepository.obter(carrinhoId);
-	    
+
+	    // Verifica se o cupom é válido
 	    if (!cupom.isValido()) {
-	        throw new IllegalStateException("O cupom é inválido ou está expirado");
+	        // Retorna falso, indicando que o cupom não foi aplicado e não altera o valor
+	        return false;
 	    }
-	    
+
 	    boolean cupomAplicado = false;
-	    
+	    float valorTotalComDesconto = carrinho.getValorTotal(); // Mantém o valor original se o cupom não for aplicável
+
+	    // Tenta aplicar o desconto item por item
 	    for (Item item : carrinho.getItens()) {
 	        Produto produto = produtoService.obter(item.getProduto());
-	        
+
 	        if (cupom.isAplicavelAProduto(item.getProduto())) {
 	            aplicarDesconto(item, cupom);
 	            cupomAplicado = true;
@@ -75,13 +79,21 @@ public class CarrinhoService {
 	            }
 	        }
 	    }
-	    
+
+	    // Atualiza o valor total do carrinho SOMENTE se o cupom foi aplicado
 	    if (cupomAplicado) {
+	        valorTotalComDesconto = carrinho.getItens().stream()
+	            .map(item -> item.getValorUnitario() * item.getQuantidade())
+	            .reduce(0.0f, Float::sum); // Recalcula o valor total com o desconto
+	        carrinho.setValorTotal(valorTotalComDesconto);
 	        carrinhoRepository.salvar(carrinho);
 	    }
-	    
+
 	    return cupomAplicado;
 	}
+
+
+
 	
 	private void aplicarDesconto(Item item, Cupom cupom) {
 	    float valorOriginal = item.getValorUnitario();
