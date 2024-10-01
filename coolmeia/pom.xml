@@ -29,6 +29,8 @@
         <module>administracao</module>
         <module>controle</module>
         <module>memoria</module>
+        <module>inistracao-bdd</module>
+        <module>administracao-bdd</module>
     </modules>
 
     <properties>

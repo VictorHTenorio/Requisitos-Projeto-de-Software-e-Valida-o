@@ -1,0 +1,17 @@
+@startuml
+
+skinparam componentStyle uml2
+
+package "'Categoria' Aggregate" <<Rectangle>> {
+	class Categoria <<(A,#fffab8) Aggregate Root>> {
+		String nome
+		CategoriaId id
+	}
+	class CategoriaId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+}
+Categoria --> CategoriaId : id
+
+
+@enduml

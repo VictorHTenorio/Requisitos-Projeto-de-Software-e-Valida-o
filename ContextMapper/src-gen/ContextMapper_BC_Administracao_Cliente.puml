@@ -1,0 +1,43 @@
+@startuml
+
+skinparam componentStyle uml2
+
+package "'Cliente' Aggregate" <<Rectangle>> {
+	class Cliente <<(A,#fffab8) Aggregate Root>> {
+		String nome
+		String userEmail
+		String senha
+		Date nascimento
+		ClienteId id
+		CarrinhoId carrinhoId
+		ListaDeDesejos listaDeDesejos
+		List<Endereco> enderecos
+		List<Cartao> cartoes
+	}
+	class ClienteId <<(V,DarkSeaGreen) Value Object>> {
+		String cpf
+	}
+	class Endereco <<(V,DarkSeaGreen) Value Object>> {
+		String cep
+		String cidade
+		String bairro
+		String rua
+		int numero
+	}
+	class Cartao <<(V,DarkSeaGreen) Value Object>> {
+		String nome
+		String numero
+		String validade
+		String cvv
+	}
+	class ListaDeDesejos <<(V,DarkSeaGreen) Value Object>> {
+		List<ProdutoId> produtos
+	}
+}
+Cliente "1" *--> "*" Endereco : enderecos
+Cliente "1" *--> "*" Cartao : cartoes
+Cliente --> ClienteId : id
+Cliente --> ListaDeDesejos : listaDeDesejos
+
+
+@enduml

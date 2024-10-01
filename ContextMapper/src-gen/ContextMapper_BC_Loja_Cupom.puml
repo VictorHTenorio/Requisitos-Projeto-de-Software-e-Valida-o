@@ -1,0 +1,25 @@
+@startuml
+
+skinparam componentStyle uml2
+
+package "'Cupom' Aggregate" <<Rectangle>> {
+	class Cupom <<(A,#fffab8) Aggregate Root>> {
+		int porcentagemDesconto
+		CupomCodigo id
+		Periodo periodoValidade
+		List<CategoriaId> categorias
+		List<ProdutoId> produtos
+	}
+	class CupomCodigo <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+	class Periodo <<(V,DarkSeaGreen) Value Object>> {
+		LocalDate inicio
+		LocalDate fim
+	}
+}
+Cupom --> CupomCodigo : id
+Cupom --> Periodo : periodoValidade
+
+
+@enduml

@@ -1,0 +1,20 @@
+@startuml
+
+skinparam componentStyle uml2
+
+package "'Compra' Aggregate" <<Rectangle>> {
+	class Compra <<(A,#fffab8) Aggregate Root>> {
+		float frete
+		CompraId id
+		CarrinhoId id
+		Endereco enderecoEntrega
+		Cartao pagamento
+	}
+	class CompraId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+}
+Compra --> CompraId : id
+
+
+@enduml

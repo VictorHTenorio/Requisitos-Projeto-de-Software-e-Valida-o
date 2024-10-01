@@ -1,0 +1,25 @@
+@startuml
+
+skinparam componentStyle uml2
+
+package "'Carrinho' Aggregate" <<Rectangle>> {
+	class Carrinho <<(A,#fffab8) Aggregate Root>> {
+		float valorTotal
+		CarrinhoId id
+		List<Item> itens
+	}
+	class CarrinhoId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+	class Item <<(V,DarkSeaGreen) Value Object>> {
+		int quantidade
+		float valorUnitario
+		ProdutoId produto
+		CupomCodigo cupom
+	}
+}
+Carrinho "1" *--> "*" Item : itens
+Carrinho --> CarrinhoId : id
+
+
+@enduml
