@@ -43,6 +43,21 @@
             <artifactId>junit-platform-suite-api</artifactId>
             <scope>test</scope>
         </dependency>
-   </dependencies>
+        <dependency>
+        	<groupId>com.example</groupId>
+        	<artifactId>loja</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>com.example</groupId>
+        	<artifactId>administracao</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+        	<groupId>com.example</groupId>
+        	<artifactId>memoria</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
+  </dependencies>
   
 </project>

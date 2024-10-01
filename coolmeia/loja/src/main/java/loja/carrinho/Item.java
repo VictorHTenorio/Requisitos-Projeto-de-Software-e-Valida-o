@@ -11,6 +11,7 @@ import loja.produto.ProdutoId;
 public class Item implements ValueObject{
 	private int quantidade;
 	private ProdutoId produto;
+	private float valorUnitario;
 	
 	public Item(int quantidade, ProdutoId produto) {
 		isTrue(quantidade>0,"A quantidade precisa ser maior que 0");
