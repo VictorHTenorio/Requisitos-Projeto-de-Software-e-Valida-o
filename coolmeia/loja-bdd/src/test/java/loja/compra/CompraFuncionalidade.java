@@ -5,14 +5,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 import administracao.cliente.Cartao;
-import administracao.cliente.Cliente;
-import administracao.cliente.ClienteId;
 import comum.administracao.cliente.Endereco;
 import loja.carrinho.Carrinho;
 import loja.carrinho.CarrinhoId;
 import loja.carrinho.CarrinhoService;
 import loja.carrinho.Item;
-
+import loja.cupom.CupomService;
 import loja.produto.Produto;
 import loja.produto.ProdutoId;
 import loja.produto.ProdutoService;
@@ -24,11 +22,12 @@ import io.cucumber.java.en.When;
 public class CompraFuncionalidade {
 
     private Carrinho carrinho;
-    private Cliente cliente;
+    
     private Produto produto;
     private Repository repository = new Repository();
     private ProdutoService produtoService = new ProdutoService(repository);
-    private CarrinhoService carrinhoService = new CarrinhoService(repository);
+    private CupomService cupomService = new CupomService(repository);
+    private CarrinhoService carrinhoService = new CarrinhoService(repository, cupomService, produtoService);
     private CompraService compraService = new CompraService(repository, carrinhoService, produtoService);
     private RuntimeException excecao;
 
@@ -47,12 +46,11 @@ public class CompraFuncionalidade {
 
         CarrinhoId carrinhoId = new CarrinhoId(1);
         carrinho = new Carrinho(carrinhoId, List.of(), 0.0f);
-        cliente = new Cliente(new ClienteId("10905515412"), "Cliente Teste", "teste@teste.com", carrinhoId);
     }
 
     @When("um cliente coloca o produto no carrinho")
     public void um_cliente_coloca_o_produto_no_carrinho() {
-        Item item = new Item(2, produto.getId());
+        Item item = new Item(2, produto.getId(), 200.0f, null);
         carrinho.adicionarItem(item, 200.0f);
     }
 
@@ -73,9 +71,9 @@ public class CompraFuncionalidade {
         assertEquals(10, produtoAtualizado.getQuantidade());
     }
 
-    @Then("A loja informa que a venda não pode ser realizada")
+    @Then("A loja informa que a venda não pode ser realizado")
     public void a_loja_informa_que_a_venda_nao_pode_ser_realizada() {
         assertNotNull(excecao);
-        assertTrue(excecao instanceof IllegalStateException);
+        assertTrue(excecao instanceof IllegalArgumentException);
     }
 }

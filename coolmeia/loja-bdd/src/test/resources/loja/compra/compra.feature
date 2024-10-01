@@ -9,5 +9,5 @@ Feature: Realizar compra
   Scenario: Produto indisponível
     Given Um "produto" "não está" disponível
     When um cliente coloca o produto no carrinho
-    And Tenta finalizar a compra
+    And o cliente finaliza a compra
     Then A loja informa que a venda não pode ser realizado
