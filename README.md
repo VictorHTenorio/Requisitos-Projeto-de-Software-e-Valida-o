@@ -23,7 +23,7 @@ Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de comp
   <tr>
     <td align="center">
       <a href="https://github.com/Arrudadiego">
-        <img src="https://avatars.githubusercontent.com/u/116604134?v=4" width="200px;" alt="Foto Diego"/><br>
+        <img src="https://avatars.githubusercontent.com/u/116604134?v=4" width="100px;" alt="Foto Diego"/><br>
         <sub>
           <b>Diego Arruda</b>
         </sub>
@@ -33,7 +33,7 @@ Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de comp
     </td>
     <td align="center">
       <a href="https://github.com/flavio-muniz">
-        <img src="https://avatars.githubusercontent.com/u/116359369?v=4" width="200px;" alt="Foto Flavio"/><br>
+        <img src="https://avatars.githubusercontent.com/u/116359369?v=4" width="100px;" alt="Foto Flavio"/><br>
         <sub>
           <b>Flavio Muniz</b>
         </sub>
@@ -43,7 +43,7 @@ Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de comp
     </td>
     <td align="center">
       <a href="https://github.com/hhenrique7510">
-        <img src="https://avatars.githubusercontent.com/u/112914701?v=4" width="200px;" alt="Foto Henrique"/><br>
+        <img src="https://avatars.githubusercontent.com/u/112914701?v=4" width="100px;" alt="Foto Henrique"/><br>
         <sub>
           <b>Henrique Roma</b>
         </sub>
@@ -53,7 +53,7 @@ Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de comp
     </td>
     <td align="center">
       <a href="https://github.com/joaohlafeta">
-        <img src="https://avatars.githubusercontent.com/u/105346791?v=4" width="200px;" alt="Foto Joao"/><br>
+        <img src="https://avatars.githubusercontent.com/u/105346791?v=4" width="100px;" alt="Foto Joao"/><br>
         <sub>
           <b>João Lafetá</b>
         </sub>
@@ -67,7 +67,7 @@ Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de comp
   <tr>
     <td align="center">
       <a href="https://github.com/Cenafowzin">
-        <img src="https://avatars.githubusercontent.com/u/83378430?v=4" width="200px;" alt="Foto Rodrigo"/><br>
+        <img src="https://avatars.githubusercontent.com/u/83378430?v=4" width="100px;" alt="Foto Rodrigo"/><br>
         <sub>
           <b>Rodrigo Dubeux</b>
         </sub>
@@ -77,7 +77,7 @@ Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de comp
     </td>
     <td align="center">
       <a href="https://github.com/VictorHTenorio">
-        <img src="https://avatars.githubusercontent.com/u/101901740?v=4" width="200px;" alt="Foto Victor"/><br>
+        <img src="https://avatars.githubusercontent.com/u/101901740?v=4" width="100px;" alt="Foto Victor"/><br>
         <sub>
           <b>Victor Hora</b>
         </sub>
@@ -87,7 +87,7 @@ Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de comp
     </td>
   <td align="center">
       <a href="https://github.com/Yara-R">
-        <img src="https://avatars.githubusercontent.com/u/103130662?v=4" width="200px;" alt="Foto Yara"/><br>
+        <img src="https://avatars.githubusercontent.com/u/103130662?v=4" width="100px;" alt="Foto Yara"/><br>
         <sub>
           <b>Yara Rodrigues</b>
         </sub>
