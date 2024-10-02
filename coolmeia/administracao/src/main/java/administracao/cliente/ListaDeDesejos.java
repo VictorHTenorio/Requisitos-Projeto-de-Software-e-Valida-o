@@ -28,6 +28,14 @@ public class ListaDeDesejos implements ValueObject {
     public List<ProdutoId> getProdutos() {
         return Collections.unmodifiableList(produtos);
     }
+    
+    public boolean verificarProdutoInLista(ProdutoId produtoId) {
+    	notNull(produtoId, "O id do produto não pode ser nulo");
+    	if(produtos.contains(produtoId)) {
+    		return true;
+    	}
+    	return false;
+    }
 
     @Override
     public boolean equals(Object obj) {

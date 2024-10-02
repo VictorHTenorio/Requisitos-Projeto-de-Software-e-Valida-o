@@ -8,7 +8,6 @@ import loja.LojaFuncionalidade;
 import loja.carrinho.Carrinho;
 import loja.carrinho.CarrinhoId;
 import loja.carrinho.Item;
-import loja.carrinho.CarrinhoService;
 import loja.produto.Produto;
 import loja.produto.ProdutoId;
 import io.cucumber.java.en.Given;
@@ -32,9 +31,6 @@ public class CupomFuncionalidade extends LojaFuncionalidade{
         carrinho = new Carrinho(carrinhoId, List.of(), 0.0f); // Cria o carrinho
         Item item = new Item(1, produto.getId(), 100.0f, null);
         carrinho.adicionarItem(item, 100.0f); // Adiciona o item ao carrinho
-
-        // Inicializa o CarrinhoService
-        carrinhoService = new CarrinhoService(repository, cupomService, produtoService);
 
         // Salva o carrinho no repositório
         carrinhoService.salvar(carrinho);

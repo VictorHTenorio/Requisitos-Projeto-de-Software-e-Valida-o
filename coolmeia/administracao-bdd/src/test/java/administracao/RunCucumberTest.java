@@ -1,4 +1,4 @@
-package administracao.cliente;
+package administracao;
 
 import static io.cucumber.core.options.Constants.PLUGIN_PROPERTY_NAME;
 

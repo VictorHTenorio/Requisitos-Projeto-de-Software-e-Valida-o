@@ -2,8 +2,12 @@ package administracao.cliente;
 
 import org.jmolecules.ddd.annotation.Service;
 
+import loja.carrinho.Carrinho;
 import loja.carrinho.CarrinhoId;
 import loja.carrinho.CarrinhoService;
+import loja.carrinho.Item;
+import loja.produto.Produto;
+import loja.produto.ProdutoService;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -11,13 +15,16 @@ import static org.apache.commons.lang3.Validate.notNull;
 public class ClienteService {
 	private final ClienteRepository clienteRepository;
 	private final CarrinhoService carrinhoService;
+	private final ProdutoService produtoService;
 	
-	public ClienteService(ClienteRepository clienteRepository, CarrinhoService carrinhoService) {
+	public ClienteService(ClienteRepository clienteRepository, CarrinhoService carrinhoService, ProdutoService produtoService) {
 		notNull(clienteRepository, "O repositório naõ pode ser nulo");
 		notNull(carrinhoService, "O service do carrinho não pode ser nulo");
+		notNull(produtoService, "O service do produto não pode ser nulo");
 		
 		this.clienteRepository = clienteRepository;
 		this.carrinhoService = carrinhoService;
+		this.produtoService = produtoService;
 	}
 	
 	public Cliente salvar(Cliente cliente) {
@@ -49,4 +56,30 @@ public class ClienteService {
 
         clienteRepository.salvar(cliente);
     }
+	
+	public void notificarCliente() {
+		System.out.print("Email enviado!");
+	}
+	
+	public boolean verificarNotificarPoucosProdutosCarrinho(ClienteId clienteId, CarrinhoId carrinhoId, int poucaQuantidade) {
+		notNull(clienteId ,"O id do cliente não pode ser nulo");
+		notNull(carrinhoId ,"O id do carrinho não pode ser nulo");
+		
+		Cliente cliente = obter(clienteId);
+		ListaDeDesejos listaDeDesejos = cliente.getListaDeDesejos();
+		Carrinho carrinho = carrinhoService.obter(carrinhoId);
+		
+		for(Item item: carrinho.getItens()) {
+			if(!listaDeDesejos.verificarProdutoInLista(item.getProduto())) {
+				continue;
+			}
+			Produto produto = produtoService.obter(item.getProduto());
+			if(produto.verificarPoucaQuantidade(poucaQuantidade)) {
+				notificarCliente();
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

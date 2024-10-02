@@ -140,6 +140,14 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 	    this.quantidade -= quantidadeAdicionada;
 	}
 	
+	public boolean verificarPoucaQuantidade(int poucaQuantidade) {
+		isTrue(poucaQuantidade > 0, "A quantidade não pode ser menor que 0");
+		if(quantidade <= poucaQuantidade) {
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public Produto clone() {
 		try {
