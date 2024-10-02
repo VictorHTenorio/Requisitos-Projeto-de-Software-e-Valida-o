@@ -2,15 +2,16 @@
 ![c0e71b90-67fe-4b51-b237-ac33c9b6691d](https://github.com/user-attachments/assets/43a8d692-1504-4cc6-ab9f-8984683e85df)
 
 
-# E-Commerce do segmento de moda
-## Descrição do domínio
-Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de compras. O usuário pode adicionar vários produtos ao carrinho antes de finalizar a compra. Após revisar os itens no carrinho, o usuário pode fazer um pedido, onde ele escolhe o endereço de entrega e a forma de pagamento. Se o usuário tiver um cupom de desconto, ele pode aplicá-lo para reduzir o preço total. Durante a revisão do pedido, o frete é calculado e o cliente pode escolher a forma de entrega. Uma vez que o pagamento é confirmado, o pedido é processado. Após receber o pedido, o usuário pode deixar uma avaliação do produto.
+# Sobre o projeto
+O presente projeto é fruto da disciplina de Requisitos, Projeto de Software e Validação, do 5° período do curso de Ciências da Computação da CESAR School. <br>Nossa ideia foi criar uma plataforma de e-commerce do segmento de moda, a qual nomeamos Coolmeia. Para o desenvolvimento do projeto, usamos arquitetura limpa, modularização em Maven e testes em Cucumber.
 ## Requisitos
+### Descrição do domínio
+Quando um usuário decide comprar um produto, ele o adiciona ao carrinho de compras. O usuário pode adicionar vários produtos ao carrinho antes de finalizar a compra. Após revisar os itens no carrinho, o usuário pode fazer um pedido, onde ele escolhe o endereço de entrega e a forma de pagamento. Se o usuário tiver um cupom de desconto, ele pode aplicá-lo para reduzir o preço total. Durante a revisão do pedido, o frete é calculado e o cliente pode escolher a forma de entrega. Uma vez que o pagamento é confirmado, o pedido é processado. Após receber o pedido, o usuário pode deixar uma avaliação do produto.
 ### Funcionalidades
-- **Finalizar compra**:
-- **Aplicar cupom no carrinho**:
-- **Notificar baixo estoque de produto na lista de desejos**:
-- **Destacar produtos novos**:
+- **Finalizar compra**: ao concretizar-se a compra, a quantidade de produtos no estoque é atualizada, sendo decrementado os itens vendidos.
+- **Aplicar cupom no carrinho**: aplica-se desconto nos produtos elegíveis para o cupom.
+- **Notificar baixo estoque de produto na lista de desejos**: informa o usuário, via e-mail, quando algum dos itens da sua lista de desejo está com pouca quantidade no estoque.
+- **Destacar produtos novos**: adiciona os produtos recém criados na página de destade do site.
 ## Links do projeto
 <a href="https://www.figma.com/design/vAj3TpkjGlNOnrVvGaheVV/lofi?node-id=0-1&t=ifviIYi3P2zFXAhF-1" target="_blank">Protótipo</a><br>
 <a href="https://raw.githubusercontent.com/VictorHTenorio/Requisitos-Projeto-de-Software-e-Valida-o/refs/heads/main/mapa_de_historias.png" target="_blank">Mapa de histórias</a><br>
