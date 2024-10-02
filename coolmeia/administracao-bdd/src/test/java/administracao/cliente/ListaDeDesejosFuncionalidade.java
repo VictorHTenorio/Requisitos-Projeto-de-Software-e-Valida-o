@@ -2,9 +2,8 @@ package administracao.cliente;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import java.util.Date;
 import java.util.List;
-
 import administracao.AdministracaoFuncionalidade;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -20,7 +19,6 @@ public class ListaDeDesejosFuncionalidade extends AdministracaoFuncionalidade{
 	
 	@Given("Um cliente com um produto na lista de desejos")
 	public void cliente_com_produto_na_lista_de_desejos(){
-		cliente = new Cliente();
 		
 		produto = new Produto("Produto Desejado", "descrição", 12, 100, List.of(), List.of());
 		produto = produtoService.salvar(produto);
@@ -28,14 +26,19 @@ public class ListaDeDesejosFuncionalidade extends AdministracaoFuncionalidade{
         carrinho = new Carrinho();
         Item item = new Item(2, produto.getId(), 100.0f, null);
         carrinho.adicionarItem(item, 100.0f);
-
-        carrinhoService.salvar(carrinho);
+        carrinho = carrinhoService.salvar(carrinho);
+        ClienteId clienteId = new ClienteId("10905515412");
+        
+        cliente = new Cliente(clienteId, "Victor", "victor@gmail.com", "123", new Date(), carrinho.getId());
+        clienteService.salvar(cliente);
+        cliente = clienteService.obter(clienteId);
 	}
 	
 	@When("A quantidade do produto fica {string} o determinado como pouco")
 	public void diminui_quantidade_produto(String quantidade) {
 		if("menor que".equals(quantidade)) {
 			produto.diminuirQuantidade(2);
+			
 		}else {
 			produto.diminuirQuantidade(1);
 		}
