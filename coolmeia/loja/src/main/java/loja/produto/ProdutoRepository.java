@@ -11,4 +11,8 @@ public interface ProdutoRepository {
 	boolean excluir(ProdutoId id);
 	
 	List<Produto> obterPorCategoria(CategoriaId categoria);
+	
+	ListaNovidades salvar(ListaNovidades listaNovidades);
+	
+	ListaNovidades obter();
 }

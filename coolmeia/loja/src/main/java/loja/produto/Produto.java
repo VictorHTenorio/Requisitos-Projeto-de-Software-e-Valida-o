@@ -7,6 +7,7 @@ import loja.categoria.CategoriaId;
 import static org.apache.commons.lang3.Validate.notBlank;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 	private float valor;
 	private List<Cor> cores;
 	private List<CategoriaId> categorias;
+	private LocalDate dataAdicao;
 	
 	public Produto(String nome, String descricao, int quantidade, float valor, List<Cor> cores, List<CategoriaId> categorias) {
 		this.id = null;
@@ -29,9 +31,10 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 		setValor(valor);
 		setCores(cores);
         setCategorias(categorias);
+        this.dataAdicao = java.time.LocalDate.now();
 	}
 	
-	public Produto(ProdutoId id, String nome, String descricao, int quantidade, float valor, List<Cor> cores, List<CategoriaId> categorias) {
+	public Produto(ProdutoId id, String nome, String descricao, int quantidade, float valor, List<Cor> cores, List<CategoriaId> categorias, LocalDate dataAdicao) {
 		notNull(id, "O id não pode ser nulo");
 		this.id = id;
 		setNome(nome);
@@ -40,6 +43,7 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 		setValor(valor);
 		setCores(cores);
         setCategorias(categorias);
+        setDataAdicao(dataAdicao);
 	}
 
 	private void setNome(String nome) {
@@ -77,6 +81,11 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
         notNull(categorias, "A lista de categorias não pode ser nula");
         this.categorias = new ArrayList<>(categorias);
     }
+    
+    private void setDataAdicao(LocalDate dataAdicao) {
+    	notNull(dataAdicao, "A data de adição não pode ser nula");
+    	this.dataAdicao = dataAdicao;
+    }
 
 	@Override
 	public ProdutoId getId() {
@@ -97,6 +106,10 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 
 	public float getValor() {
 		return valor;
+	}
+	
+	public LocalDate getDataAdicao() {
+		return dataAdicao;
 	}
 	
 	public List<Cor> getCores() {

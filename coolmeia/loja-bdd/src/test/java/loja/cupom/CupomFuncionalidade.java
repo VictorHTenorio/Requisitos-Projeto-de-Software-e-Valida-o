@@ -4,37 +4,28 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import loja.LojaFuncionalidade;
 import loja.carrinho.Carrinho;
 import loja.carrinho.CarrinhoId;
 import loja.carrinho.Item;
 import loja.carrinho.CarrinhoService;
-import loja.cupom.Cupom;
-import loja.cupom.CupomCodigo;
-import loja.cupom.CupomService;
-import loja.cupom.Periodo;
 import loja.produto.Produto;
 import loja.produto.ProdutoId;
-import loja.produto.ProdutoService;
-import memoria.Repository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 
-public class CupomFuncionalidade {
+public class CupomFuncionalidade extends LojaFuncionalidade{
 
     private Carrinho carrinho;
     private Cupom cupom;
     private Produto produto;
-    private CarrinhoService carrinhoService;
-    private Repository repository = new Repository();
-    private ProdutoService produtoService = new ProdutoService(repository);
-    private CupomService cupomService = new CupomService(repository); // Passa o repositório para o serviço
     private boolean cupomAplicado;
 
     @Given("Um carrinho de compras com produtos")
     public void um_carrinho_de_compras_com_produtos() {
         ProdutoId produtoId = new ProdutoId(1);
-        produto = new Produto(produtoId, "Produto Teste", "Descrição", 10, 100.0f, List.of(), List.of());
+        produto = new Produto(produtoId, "Produto Teste", "Descrição", 10, 100.0f, List.of(), List.of(), java.time.LocalDate.now());
         produtoService.salvar(produto);
 
         CarrinhoId carrinhoId = new CarrinhoId(1);

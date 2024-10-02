@@ -2,6 +2,8 @@ package loja.produto;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jmolecules.ddd.annotation.Service;
@@ -20,7 +22,23 @@ public class ProdutoService {
 	public Produto salvar(Produto produto) {
 		notNull(produto, "O produto não pode ser nulO");
 		
-		return produtoRepository.salvar(produto);
+		Produto produtoSalvo = produtoRepository.salvar(produto);
+		
+		return produtoSalvo;
+	}
+	
+	public Produto salvar(Produto produto, ListaNovidades listaNovidades) {
+		notNull(produto, "O produto não pode ser nulO");
+		
+		Produto produtoSalvo = produtoRepository.salvar(produto);
+		
+		if(produtoSalvo.getDataAdicao().isAfter(LocalDate.now().minusDays(30))) {
+			
+			listaNovidades.adicionarProduto(produtoSalvo.getId());
+			salvar(listaNovidades);
+		}
+		
+		return produtoSalvo;
 	}
 	
 	public Produto obter(ProdutoId id) {
@@ -36,7 +54,32 @@ public class ProdutoService {
 	}
 	
 	 public List<Produto> obterProdutosPorCategoria(CategoriaId categoria) {
+		 
 	        notNull(categoria, "A categoria não pode ser nula");
 	        return produtoRepository.obterPorCategoria(categoria);
-	    }
+	 }
+	 
+	 public ListaNovidades salvar(ListaNovidades listaNovidades) {
+		 notNull(listaNovidades, "A lista de novidades não pode ser nula");
+		 return produtoRepository.salvar(listaNovidades);
+	 }
+	 
+	 public ListaNovidades obter() {
+		 return produtoRepository.obter();
+	 }
+	 
+	 public ListaNovidades verificarListaNovidades(ListaNovidades listaNovidades) {
+		 List<ProdutoId> novaLista = new ArrayList<ProdutoId>();
+		 
+		 for(ProdutoId produtoId : listaNovidades.getProdutos()) {
+			 Produto produto = obter(produtoId);
+			 
+			 if(produto.getDataAdicao().isAfter(LocalDate.now().minusDays(30))) {
+				 novaLista.add(produtoId);
+			 }
+		 }
+		 
+		 listaNovidades.setProdutos(novaLista);
+		 return salvar(listaNovidades);
+	 }
 }

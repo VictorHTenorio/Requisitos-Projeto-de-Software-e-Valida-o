@@ -24,6 +24,7 @@ import loja.compra.CompraRepository;
 import loja.cupom.Cupom;
 import loja.cupom.CupomCodigo;
 import loja.cupom.CupomRepository;
+import loja.produto.ListaNovidades;
 import loja.produto.Produto;
 import loja.produto.ProdutoId;
 import loja.produto.ProdutoRepository;
@@ -34,6 +35,7 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
     private int carrinhoIdCounter = 1;
     private int compraIdCounter = 1;
     private int produtoIdCounter = 1;
+    private ListaNovidades listaNovidades;
     
 	/*-----------------------------Cliente------------------------------------------*/
 	private Map<ClienteId, Cliente> clientes = new HashMap<>();
@@ -166,7 +168,7 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
         notNull(produto, "O produto não pode ser nulo");
         if (produto.getId() == null) {
             ProdutoId novoId = new ProdutoId(produtoIdCounter++);
-            produto = new Produto(novoId, produto.getNome(), produto.getDescricao(),produto.getQuantidade(),produto.getValor(), produto.getCores(), produto.getCategorias());
+            produto = new Produto(novoId, produto.getNome(), produto.getDescricao(),produto.getQuantidade(),produto.getValor(), produto.getCores(), produto.getCategorias(), produto.getDataAdicao());
         }
         produtos.put(produto.getId(), produto);
         return produto;
@@ -191,6 +193,18 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
                 .filter(produto -> produto.getCategorias().contains(categoriaId))
                 .collect(Collectors.toList());
     }
+
+	@Override
+	public ListaNovidades salvar(ListaNovidades listaNovidades) {
+		notNull(listaNovidades, "A lista de novidades não pode ser nula");
+        this.listaNovidades = listaNovidades;
+        return this.listaNovidades;
+	}
+
+	@Override
+	public ListaNovidades obter() {
+		return this.listaNovidades;
+	}
 	
 	
 	

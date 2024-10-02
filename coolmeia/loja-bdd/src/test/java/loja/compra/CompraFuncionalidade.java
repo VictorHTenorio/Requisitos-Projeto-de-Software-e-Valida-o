@@ -6,36 +6,27 @@ import java.util.List;
 
 import administracao.cliente.Cartao;
 import comum.administracao.cliente.Endereco;
+import loja.LojaFuncionalidade;
 import loja.carrinho.Carrinho;
 import loja.carrinho.CarrinhoId;
-import loja.carrinho.CarrinhoService;
 import loja.carrinho.Item;
-import loja.cupom.CupomService;
 import loja.produto.Produto;
 import loja.produto.ProdutoId;
-import loja.produto.ProdutoService;
-import memoria.Repository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class CompraFuncionalidade {
+public class CompraFuncionalidade extends LojaFuncionalidade{
 
     private Carrinho carrinho;
-    
     private Produto produto;
-    private Repository repository = new Repository();
-    private ProdutoService produtoService = new ProdutoService(repository);
-    private CupomService cupomService = new CupomService(repository);
-    private CarrinhoService carrinhoService = new CarrinhoService(repository, cupomService, produtoService);
-    private CompraService compraService = new CompraService(repository, carrinhoService, produtoService);
     private RuntimeException excecao;
 
     @Given("Um {string} {string} disponível")
     public void um_produto_disponivel(String classe, String disponibilidade) {
         ProdutoId produtoId = new ProdutoId(1);
 
-        produto = new Produto(produtoId, "Produto Teste", "Descrição", 10, 100.0f, List.of(), List.of());
+        produto = new Produto(produtoId, "Produto Teste", "Descrição", 10, 100.0f, List.of(), List.of(), java.time.LocalDate.now());
         produtoService.salvar(produto);
 
         if ("não está".equals(disponibilidade)) {
