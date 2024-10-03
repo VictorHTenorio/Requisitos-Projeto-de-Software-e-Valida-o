@@ -19,6 +19,9 @@ package "'Produto' Aggregate" <<Rectangle>> {
 		String nome
 		String hex
 	}
+	class ProdutoService <<(S,DarkSeaGreen) Service>> {
+		List<Produto> obterProdutosPorCategoria(CategoriaId categoria)
+	}
 }
 Produto --> ProdutoId : id
 Produto "1" *--> "*" Cor : cores

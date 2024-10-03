@@ -17,6 +17,11 @@ package "'Carrinho' Aggregate" <<Rectangle>> {
 		ProdutoId produto
 		CupomCodigo cupom
 	}
+	class CarrinhoService <<(S,DarkSeaGreen) Service>> {
+		CarrinhoId criarNovoCarrinho()
+		boolean aplicarCupom(CupomCodigo cupomCodigo, CarrinhoId carrinhoId)
+		void aplicarDesconto(Item item, Cupom cupom)
+	}
 }
 Carrinho "1" *--> "*" Item : itens
 Carrinho --> CarrinhoId : id

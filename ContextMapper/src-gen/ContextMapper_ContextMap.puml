@@ -1,0 +1,17 @@
+@startuml
+
+skinparam componentStyle uml2
+
+component [Administracao]
+component [Controle]
+component [Loja]
+
+[Loja]<-->[Administracao] : Shared Kernel
+
+[Controle]<-->[Administracao] : Shared Kernel
+
+[Controle]<-->[Loja] : Shared Kernel
+
+
+
+@enduml

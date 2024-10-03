@@ -13,6 +13,9 @@ package "'Compra' Aggregate" <<Rectangle>> {
 	class CompraId <<(V,DarkSeaGreen) Value Object>> {
 		int id
 	}
+	class CompraService <<(S,DarkSeaGreen) Service>> {
+		void realizarCompra(CompraId compraId)
+	}
 }
 Compra --> CompraId : id
 

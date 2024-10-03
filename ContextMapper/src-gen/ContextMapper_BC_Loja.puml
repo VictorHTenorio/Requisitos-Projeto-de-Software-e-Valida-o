@@ -19,6 +19,9 @@ package "'Produto' Aggregate" <<Rectangle>> {
 		String nome
 		String hex
 	}
+	class ProdutoService <<(S,DarkSeaGreen) Service>> {
+		List<Produto> obterProdutosPorCategoria(CategoriaId categoria)
+	}
 }
 package "'Categoria' Aggregate" <<Rectangle>> {
 	class Categoria <<(A,#fffab8) Aggregate Root>> {
@@ -44,6 +47,11 @@ package "'Carrinho' Aggregate" <<Rectangle>> {
 		ProdutoId produto
 		CupomCodigo cupom
 	}
+	class CarrinhoService <<(S,DarkSeaGreen) Service>> {
+		CarrinhoId criarNovoCarrinho()
+		boolean aplicarCupom(CupomCodigo cupomCodigo, CarrinhoId carrinhoId)
+		void aplicarDesconto(Item item, Cupom cupom)
+	}
 }
 package "'Compra' Aggregate" <<Rectangle>> {
 	class Compra <<(A,#fffab8) Aggregate Root>> {
@@ -55,6 +63,9 @@ package "'Compra' Aggregate" <<Rectangle>> {
 	}
 	class CompraId <<(V,DarkSeaGreen) Value Object>> {
 		int id
+	}
+	class CompraService <<(S,DarkSeaGreen) Service>> {
+		void realizarCompra(CompraId compraId)
 	}
 }
 package "'Cupom' Aggregate" <<Rectangle>> {

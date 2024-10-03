@@ -13,6 +13,12 @@ package "'Cliente' Aggregate" <<Rectangle>> {
 		ListaDeDesejos listaDeDesejos
 		List<Endereco> enderecos
 		List<Cartao> cartoes
+		void adicionarEndereco(Endereco endereco)
+		void removerEndereco(Endereco endereco)
+		void adicionarCartao(Cartao cartao)
+		void removerCartao(Cartao cartao)
+		void adicionarProdutoListaDeDesejos(ProdutoId produto)
+		void removerProdutoListaDeDesejos(ProdutoId produto)
 	}
 	class ClienteId <<(V,DarkSeaGreen) Value Object>> {
 		String cpf
@@ -32,6 +38,11 @@ package "'Cliente' Aggregate" <<Rectangle>> {
 	}
 	class ListaDeDesejos <<(V,DarkSeaGreen) Value Object>> {
 		List<ProdutoId> produtos
+	}
+	class ClienteService <<(S,DarkSeaGreen) Service>> {
+		void limparCarrinho(ClienteId clienteId)
+		void notificarCliente()
+		boolean verificarNotificarPoucosProdutosCarrinho(ClienteId clienteId, CarrinhoId carrinhoId)
 	}
 }
 Cliente "1" *--> "*" Endereco : enderecos
