@@ -3,6 +3,7 @@ package memoria;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -91,9 +92,9 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
     }
 
 	@Override
-	public Categoria obter(CategoriaId id) {
+	public Optional<Categoria> obter(CategoriaId id) {
         notNull(id, "O ID da categoria não pode ser nulo");
-        return categorias.get(id);
+        return Optional.ofNullable(categorias.get(id));
     }
 
 	@Override

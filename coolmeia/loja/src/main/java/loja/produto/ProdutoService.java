@@ -1,12 +1,11 @@
 package loja.produto;
 
 import static org.apache.commons.lang3.Validate.notNull;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
-import org.jmolecules.ddd.annotation.Service;
 import loja.categoria.CategoriaId;
 
 @Service
@@ -20,26 +19,17 @@ public class ProdutoService {
 	}
 	
 	public Produto salvar(Produto produto) {
-		notNull(produto, "O produto não pode ser nulO");
-		
-		Produto produtoSalvo = produtoRepository.salvar(produto);
-		
-		return produtoSalvo;
-	}
-	
-	public Produto salvar(Produto produto, ListaNovidades listaNovidades) {
-		notNull(produto, "O produto não pode ser nulO");
-		
-		Produto produtoSalvo = produtoRepository.salvar(produto);
-		
-		if(produtoSalvo.getDataAdicao().isAfter(LocalDate.now().minusDays(30))) {
-			
-			listaNovidades.adicionarProduto(produtoSalvo.getId());
-			salvar(listaNovidades);
-		}
-		
-		return produtoSalvo;
-	}
+        notNull(produto, "O produto não pode ser nulo");
+        
+        Produto produtoSalvo = produtoRepository.salvar(produto);
+        
+        if(produtoSalvo.getDataAdicao().isAfter(LocalDate.now().minusDays(30))) {
+            ListaNovidades.getInstance().adicionarProduto(produtoSalvo.getId());
+            salvar(ListaNovidades.getInstance());
+        }
+        
+        return produtoSalvo;
+    }
 	
 	public Produto obter(ProdutoId id) {
 		notNull(id, "O produto id não pode ser nulo");

@@ -28,7 +28,7 @@ public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId> {
         setNome(nome);
         setEmail(email);
         setCarrinhoId(carrinho);
-        this.listaDeDesejos = null;
+        this.listaDeDesejos = new ListaDeDesejos();
         this.enderecos = new ArrayList<>();
         this.cartoes = new ArrayList<>();
     }
@@ -92,12 +92,12 @@ public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId> {
         this.email = email;
     }
 
-    private void setSenha(String senha) {
+    public void setSenha(String senha) {
         notBlank(senha, "A senha não pode ser em branco");
         this.senha = senha;
     }
 
-    private void setNascimento(Date nascimento) {
+    public void setNascimento(Date nascimento) {
         notNull(nascimento, "A data de nascimento não pode ser nula");
         this.nascimento = nascimento;
     }

@@ -1,9 +1,11 @@
 package loja.categoria;
 
+import java.util.Optional;
+
 public interface CategoriaRepository {
 	Categoria salvar(Categoria produto);
 	
-	Categoria obter(CategoriaId id);
+	Optional<Categoria> obter(CategoriaId id);
 	
 	boolean excluir(CategoriaId id);
 }

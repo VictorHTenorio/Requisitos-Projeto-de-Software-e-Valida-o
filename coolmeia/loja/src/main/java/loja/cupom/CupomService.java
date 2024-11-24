@@ -1,7 +1,7 @@
 package loja.cupom;
 
 import static org.apache.commons.lang3.Validate.notNull;
-import org.jmolecules.ddd.annotation.Service;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CupomService {

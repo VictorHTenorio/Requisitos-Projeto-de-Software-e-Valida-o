@@ -18,12 +18,12 @@ public class ListaNovidadeFuncionalidade extends LojaFuncionalidade{
 	
 	@Given("Um produto novo foi criado")
 	public void produto_novo_criado() {
-		listaNovidades = new ListaNovidades();
+		listaNovidades = ListaNovidades.getInstance();
 		produtoService.salvar(listaNovidades);
 		
 		produto = new Produto("Novo Produto", "Descrição", 10, 100.0f, List.of(), List.of());
 		
-		produto = produtoService.salvar(produto, listaNovidades);
+		produto = produtoService.salvar(produto);
 	}
 	
 	@Then("O produto é adicionado na lista de novos produtos")
@@ -37,7 +37,7 @@ public class ListaNovidadeFuncionalidade extends LojaFuncionalidade{
 	public void produto_antigo_na_lista_de_novos_produtos() {
 		produto = new Produto(new ProdutoId(2), "Produto Antigo", "Descrição", 10, 100.0f, List.of(), List.of(), LocalDate.now().minusDays(40));
 		
-		listaNovidades = new ListaNovidades();
+		listaNovidades = ListaNovidades.getInstance();
 		
 		listaNovidades.adicionarProduto(produto.getId());
 		

@@ -30,6 +30,8 @@
         <module>controle</module>
         <module>memoria</module>
         <module>administracao-bdd</module>
+        <module>jpa</module>
+        <module>aplicacao-backend</module>
     </modules>
 
     <properties>

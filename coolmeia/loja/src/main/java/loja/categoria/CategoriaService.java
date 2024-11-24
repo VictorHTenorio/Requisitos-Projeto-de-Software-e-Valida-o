@@ -1,7 +1,9 @@
 package loja.categoria;
 
-import org.jmolecules.ddd.annotation.Service;
+
 import static org.apache.commons.lang3.Validate.notNull;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CategoriaService {
@@ -19,7 +21,7 @@ public class CategoriaService {
 		return categoriaRepository.salvar(categoria);
 	}
 	
-	public Categoria obter(CategoriaId id) {
+	public Optional<Categoria> obter(CategoriaId id) {
 		notNull(id, "A categoria id não pode ser nula");
 		
 		return categoriaRepository.obter(id);

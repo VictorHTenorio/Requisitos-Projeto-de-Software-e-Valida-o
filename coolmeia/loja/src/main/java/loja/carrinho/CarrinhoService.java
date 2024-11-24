@@ -1,6 +1,5 @@
 package loja.carrinho;
 
-import org.jmolecules.ddd.annotation.Service;
 
 import loja.categoria.CategoriaId;
 import loja.cupom.Cupom;
@@ -8,8 +7,8 @@ import loja.cupom.CupomCodigo;
 import loja.cupom.CupomService;
 import loja.produto.Produto;
 import loja.produto.ProdutoService;
-
 import static org.apache.commons.lang3.Validate.notNull;
+import org.springframework.stereotype.Service;
 
 @Service
 public class CarrinhoService {
