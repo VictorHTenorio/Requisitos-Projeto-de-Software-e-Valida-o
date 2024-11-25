@@ -23,7 +23,7 @@ const Header = () => {
           {/* Navegação e ícones */}
           <div className="flex-1 flex justify-end items-center space-x-8">
             <nav className="flex space-x-8">
-              <Link to="/cadastro" className="text-amber-400 hover:text-amber-300">Cadastro</Link>
+              <Link to="/login" className="text-amber-400 hover:text-amber-300">Login</Link>
               <Link to="/cadastro-produto" className="text-amber-400 hover:text-amber-300">Cadastro-produto</Link>
               <Link to="/wishlist" className="text-amber-400 hover:text-amber-300">WISHLIST</Link>
             </nav>

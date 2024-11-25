@@ -5,7 +5,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import static org.apache.commons.lang3.Validate.notNull;
 
 @Repository
@@ -62,5 +66,19 @@ public class CategoriaJpaRepository implements CategoriaRepository {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Categoria> obterTodas() {
+        // Criar uma consulta JPQL para buscar todas as categorias
+        List<CategoriaJpaEntity> jpaEntities = entityManager.createQuery(
+            "SELECT c FROM CategoriaJpaEntity c", 
+            CategoriaJpaEntity.class
+        ).getResultList();
+        
+        // Converter cada entidade JPA para entidade de domínio
+        return jpaEntities.stream()
+            .map(mapper::toDomainEntity)
+            .collect(Collectors.toList());
     }
 }

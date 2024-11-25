@@ -206,6 +206,12 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
 	public ListaNovidades obter() {
 		return this.listaNovidades;
 	}
+
+	@Override
+	public List<Categoria> obterTodas() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

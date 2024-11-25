@@ -1,20 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { X } from 'lucide-react';
+import { X, AlertCircle, CheckCircle } from 'lucide-react';
+
+const Alert = ({ type, message, onClose }) => {
+  const bgColor = type === 'success' ? 'bg-green-100' : 'bg-red-100';
+  const textColor = type === 'success' ? 'text-green-800' : 'text-red-800';
+  const Icon = type === 'success' ? CheckCircle : AlertCircle;
+
+  return (
+    <div className={`rounded-md ${bgColor} p-4 mb-4`}>
+      <div className="flex">
+        <div className="flex-shrink-0">
+          <Icon className={`h-5 w-5 ${textColor}`} aria-hidden="true" />
+        </div>
+        <div className="ml-3">
+          <p className={`text-sm font-medium ${textColor}`}>{message}</p>
+        </div>
+        <div className="ml-auto pl-3">
+          <div className="-mx-1.5 -my-1.5">
+            <button
+              type="button"
+              onClick={onClose}
+              className={`inline-flex rounded-md p-1.5 ${textColor} hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-green-50 focus:ring-green-600`}
+            >
+              <span className="sr-only">Fechar</span>
+              <X className="h-5 w-5" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProductRegistrationPage = () => {
-  const [product, setProduct] = useState({
-    name: '',
-    description: '',
-    price: '',
-    quantity: '',
-    photo: null,
-    categories: [],
-    colors: [],
-  });
+  const initialProductState = {
+    nome: '',
+    descricao: '',
+    valor: '',
+    quantidade: '',
+    cores: [],
+    categorias: []
+  };
+
+  const [product, setProduct] = useState(initialProductState);
   const [category, setCategory] = useState('');
-  const [color, setColor] = useState({ name: '', hex: '' });
+  const [color, setColor] = useState({ nome: '', hex: '' });
+  const [availableCategories, setAvailableCategories] = useState([]);
+  const [alert, setAlert] = useState(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/coolmeia/categorias');
+        if (response.ok) {
+          const categories = await response.json();
+          console.log('Categorias carregadas:', categories);
+          setAvailableCategories(categories);
+        } else {
+          throw new Error('Erro ao carregar categorias');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+        setAlert({
+          type: 'error',
+          message: 'Erro ao carregar categorias. Por favor, recarregue a página.'
+        });
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const resetForm = () => {
+    setProduct(initialProductState);
+    setColor({ nome: '', hex: '' });
+    setCategory('');
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,24 +87,19 @@ const ProductRegistrationPage = () => {
     }));
   };
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    setProduct((prevProduct) => ({
-      ...prevProduct,
-      photo: file,
-    }));
-  };
-
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
   };
 
   const handleCategoryAdd = () => {
-    if (category.trim() !== '') {
-      setProduct((prevProduct) => ({
-        ...prevProduct,
-        categories: [...prevProduct.categories, category.trim()],
-      }));
+    if (category) {
+      const selectedCategory = availableCategories.find(cat => cat.id.toString() === category);
+      if (selectedCategory && !product.categorias.some(cat => cat.id === selectedCategory.id)) {
+        setProduct(prevProduct => ({
+          ...prevProduct,
+          categorias: [...prevProduct.categorias, { id: selectedCategory.id }]
+        }));
+      }
       setCategory('');
     }
   };
@@ -49,14 +107,14 @@ const ProductRegistrationPage = () => {
   const handleCategoryRemove = (categoryToRemove) => {
     setProduct((prevProduct) => ({
       ...prevProduct,
-      categories: prevProduct.categories.filter((cat) => cat !== categoryToRemove),
+      categorias: prevProduct.categorias.filter((cat) => cat.id !== categoryToRemove.id),
     }));
   };
 
   const handleColorNameChange = (e) => {
     setColor((prevColor) => ({
       ...prevColor,
-      name: e.target.value,
+      nome: e.target.value,
     }));
   };
 
@@ -68,54 +126,67 @@ const ProductRegistrationPage = () => {
   };
 
   const handleColorAdd = () => {
-    if (color.name.trim() !== '' && color.hex.trim() !== '') {
+    if (color.nome.trim() !== '' && color.hex.trim() !== '') {
       setProduct((prevProduct) => ({
         ...prevProduct,
-        colors: [...prevProduct.colors, color],
+        cores: [...prevProduct.cores, color],
       }));
-      setColor({ name: '', hex: '' });
+      setColor({ nome: '', hex: '' });
     }
   };
 
   const handleColorRemove = (colorToRemove) => {
     setProduct((prevProduct) => ({
       ...prevProduct,
-      colors: prevProduct.colors.filter((c) => c.name !== colorToRemove.name && c.hex !== colorToRemove.hex),
+      cores: prevProduct.cores.filter((c) => c.nome !== colorToRemove.nome && c.hex !== colorToRemove.hex),
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append('name', product.name);
-    formData.append('description', product.description);
-    formData.append('price', product.price);
-    formData.append('quantity', product.quantity);
-    formData.append('photo', product.photo);
-    product.categories.forEach((category) => {
-      formData.append('categories[]', category);
-    });
-    product.colors.forEach((color) => {
-      formData.append('colors[]', JSON.stringify(color));
-    });
+    const payload = {
+      nome: product.nome,
+      descricao: product.descricao,
+      quantidade: parseInt(product.quantidade),
+      valor: parseFloat(product.valor),
+      cores: product.cores,
+      categorias: product.categorias.map(categoria => ({ id: parseInt(categoria.id) }))
+    };
 
     try {
-      const response = await fetch('/api/products', {
+      console.log('Enviando payload:', payload);
+      const response = await fetch('http://localhost:8080/coolmeia/produtos', {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
       });
 
       if (response.ok) {
-        // Produto cadastrado com sucesso, faça algo (por exemplo, redirecionar, exibir mensagem de sucesso)
-        console.log('Produto cadastrado com sucesso!');
+        const produtoSalvo = await response.json();
+        console.log('Produto salvo:', produtoSalvo);
+        setAlert({
+          type: 'success',
+          message: 'Produto cadastrado com sucesso!'
+        });
+        resetForm();
       } else {
-        // Erro no cadastro, verifique a resposta do servidor para detalhes
-        const errorData = await response.json();
-        console.error('Erro no cadastro:', errorData.message);
+        const error = await response.text();
+        console.error('Erro da API:', error);
+        setAlert({
+          type: 'error',
+          message: 'Erro ao cadastrar produto. Por favor, tente novamente.'
+        });
       }
     } catch (error) {
-      console.error('Erro na requisição:', error);
+      console.error('Erro de rede:', error);
+      setAlert({
+        type: 'error',
+        message: 'Erro de conexão. Por favor, verifique sua internet e tente novamente.'
+      });
     }
   };
 
@@ -126,74 +197,69 @@ const ProductRegistrationPage = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-black mb-8">Cadastro de Produto</h1>
 
+        {alert && (
+          <Alert
+            type={alert.type}
+            message={alert.message}
+            onClose={() => setAlert(null)}
+          />
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 gap-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-black">
+              <label htmlFor="nome" className="block text-sm font-medium text-black">
                 Nome
               </label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={product.name}
+                id="nome"
+                name="nome"
+                value={product.nome}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
                 required
               />
             </div>
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-black">
+              <label htmlFor="descricao" className="block text-sm font-medium text-black">
                 Descrição
               </label>
               <textarea
-                id="description"
-                name="description"
-                value={product.description}
+                id="descricao"
+                name="descricao"
+                value={product.descricao}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
                 required
               />
             </div>
             <div>
-              <label htmlFor="price" className="block text-sm font-medium text-black">
+              <label htmlFor="valor" className="block text-sm font-medium text-black">
                 Preço
               </label>
               <input
                 type="number"
-                id="price"
-                name="price"
+                id="valor"
+                name="valor"
                 step="0.01"
-                value={product.price}
+                value={product.valor}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
                 required
               />
             </div>
             <div>
-              <label htmlFor="quantity" className="block text-sm font-medium text-black">
+              <label htmlFor="quantidade" className="block text-sm font-medium text-black">
                 Quantidade em Estoque
               </label>
               <input
                 type="number"
-                id="quantity"
-                name="quantity"
-                value={product.quantity}
+                id="quantidade"
+                name="quantidade"
+                value={product.quantidade}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="photo" className="block text-sm font-medium text-black">
-                Foto
-              </label>
-              <input
-                type="file"
-                id="photo"
-                name="photo"
-                onChange={handlePhotoChange}
-                className="mt-1 block w-full text-sm text-black file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
                 required
               />
             </div>
@@ -202,14 +268,20 @@ const ProductRegistrationPage = () => {
                 Categoria
               </label>
               <div className="mt-1 flex">
-                <input
-                  type="text"
+                <select
                   id="category"
                   name="category"
                   value={category}
                   onChange={handleCategoryChange}
                   className="flex-grow rounded-none rounded-l-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                />
+                >
+                  <option value="">Selecione uma categoria</option>
+                  {availableCategories.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.nome}
+                    </option>
+                  ))}
+                </select>
                 <button
                   type="button"
                   onClick={handleCategoryAdd}
@@ -219,12 +291,12 @@ const ProductRegistrationPage = () => {
                 </button>
               </div>
               <div className="mt-2 flex flex-wrap gap-2">
-                {product.categories.map((category, index) => (
+                {product.categorias.map((category) => (
                   <div
-                    key={index}
+                    key={category.id}
                     className="inline-flex items-center px-2 py-1 rounded-md bg-amber-200 text-black text-sm"
                   >
-                    {category}
+                    {availableCategories.find(cat => cat.id === category.id)?.nome || `Categoria ${category.id}`}
                     <button
                       type="button"
                       onClick={() => handleCategoryRemove(category)}
@@ -245,7 +317,7 @@ const ProductRegistrationPage = () => {
                   type="text"
                   id="colorName"
                   name="colorName"
-                  value={color.name}
+                  value={color.nome}
                   onChange={handleColorNameChange}
                   className="flex-grow rounded-none rounded-l-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
                   placeholder="Nome da cor"
@@ -267,19 +339,19 @@ const ProductRegistrationPage = () => {
                 </button>
               </div>
               <div className="mt-2 flex flex-wrap gap-2">
-                {product.colors.map((color, index) => (
+                {product.cores.map((cor, index) => (
                   <div
                     key={index}
                     className="inline-flex items-center px-2 py-1 rounded-md bg-amber-200 text-black text-sm"
                   >
-                    <div 
+                    <div
                       className="w-4 h-4 rounded-full mr-2"
-                      style={{ backgroundColor: color.hex }}
+                      style={{ backgroundColor: cor.hex }}
                     />
-                    {color.name}
+                    {cor.nome}
                     <button
                       type="button"
-                      onClick={() => handleColorRemove(color)}
+                      onClick={() => handleColorRemove(cor)}
                       className="ml-1 text-black hover:text-red-500"
                     >
                       <X className="h-4 w-4" />

@@ -7,10 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/coolmeia/categorias")
 public class CategoriaController {
     
@@ -57,6 +59,16 @@ public class CategoriaController {
             }
             return ResponseEntity.notFound().build();
         } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<Categoria>> obterTodas() {
+        try {
+            List<Categoria> categorias = categoriaService.obterTodas();
+            return ResponseEntity.ok(categorias);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/coolmeia/clientes")
 public class ClienteController {
     

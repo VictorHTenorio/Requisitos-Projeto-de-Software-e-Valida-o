@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/coolmeia/produtos")
 public class ProdutoController {
     

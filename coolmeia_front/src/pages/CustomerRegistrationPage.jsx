@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const CustomerRegistrationPage = () => {
+  const navigate = useNavigate();
   const [customer, setCustomer] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
     cpf: '',
-    birthDate: '',
-    cep: '',
-    address: {
-      street: '',
-      neighborhood: '',
-      city: '',
-      state: '',
-    },
+    nome: '',
+    email: '',
+    senha: '',
+    nascimento: '',
   });
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,59 +22,40 @@ const CustomerRegistrationPage = () => {
     }));
   };
 
-  const handleCepChange = async (e) => {
-    const cep = e.target.value;
-    setCustomer((prevCustomer) => ({
-      ...prevCustomer,
-      cep,
-    }));
-
-    if (cep.length === 8) {
-      try {
-        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-        const data = await response.json();
-
-        if (!data.erro) {
-          setCustomer((prevCustomer) => ({
-            ...prevCustomer,
-            address: {
-              street: data.logradouro,
-              neighborhood: data.bairro,
-              city: data.localidade,
-              state: data.uf,
-            },
-          }));
-        } else {
-          setCustomer((prevCustomer) => ({
-            ...prevCustomer,
-            address: {
-              street: '',
-              neighborhood: '',
-              city: '',
-              state: '',
-            },
-          }));
-        }
-      } catch (error) {
-        console.error('Erro ao buscar o endereço:', error);
-      }
-    } else {
-      setCustomer((prevCustomer) => ({
-        ...prevCustomer,
-        address: {
-          street: '',
-          neighborhood: '',
-          city: '',
-          state: '',
-        },
-      }));
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Aqui você pode enviar os dados do cliente para o backend ou fazer outras ações necessárias
-    console.log('Dados do cliente:', customer);
+
+    try {
+      const response = await fetch('http://localhost:8080/coolmeia/clientes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cpf: customer.cpf,
+          nome: customer.nome,
+          email: customer.email,
+          senha: customer.senha,
+          nascimento: new Date(customer.nascimento).getTime(),
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Cliente cadastrado com sucesso!');
+        navigate('/login'); // Redirecionar para a página de login
+      } else {
+        // Obtém a mensagem do servidor ou uma genérica
+        const errorData = await response.json().catch(() => response.text());
+        const errorMessage =
+          (typeof errorData === 'string' && errorData) ||
+          errorData.message ||
+          'Erro desconhecido. Por favor, tente novamente.';
+        setErrorMessage(errorMessage);
+      }
+    } catch (error) {
+      console.error('Erro na requisição:', error);
+      setErrorMessage('Ocorreu um erro na requisição. Por favor, tente novamente.');
+    }
   };
 
   return (
@@ -89,31 +65,38 @@ const CustomerRegistrationPage = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-black mb-8">Cadastro de Cliente</h1>
 
+        {errorMessage && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {errorMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-black">
-                Nome
+              <label htmlFor="cpf" className="block text-sm font-medium text-black">
+                CPF
               </label>
               <input
                 type="text"
-                id="firstName"
-                name="firstName"
-                value={customer.firstName}
+                id="cpf"
+                name="cpf"
+                value={customer.cpf}
                 onChange={handleInputChange}
+                placeholder="xxxxxxxxxxx"
                 className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
                 required
               />
             </div>
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-black">
-                Sobrenome
+              <label htmlFor="nome" className="block text-sm font-medium text-black">
+                Nome
               </label>
               <input
                 type="text"
-                id="lastName"
-                name="lastName"
-                value={customer.lastName}
+                id="nome"
+                name="nome"
+                value={customer.nome}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
                 required
@@ -134,73 +117,34 @@ const CustomerRegistrationPage = () => {
               />
             </div>
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-black">
-                Telefone
+              <label htmlFor="senha" className="block text-sm font-medium text-black">
+                Senha
               </label>
               <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={customer.phone}
+                type="password"
+                id="senha"
+                name="senha"
+                value={customer.senha}
                 onChange={handleInputChange}
                 className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
                 required
               />
             </div>
             <div>
-              <label htmlFor="cpf" className="block text-sm font-medium text-black">
-                CPF
-              </label>
-              <input
-                type="text"
-                id="cpf"
-                name="cpf"
-                value={customer.cpf}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="birthDate" className="block text-sm font-medium text-black">
+              <label htmlFor="nascimento" className="block text-sm font-medium text-black">
                 Data de Nascimento
               </label>
               <input
                 type="date"
-                id="birthDate"
-                name="birthDate"
-                value={customer.birthDate}
+                id="nascimento"
+                name="nascimento"
+                value={customer.nascimento}
                 onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="cep" className="block text-sm font-medium text-black">
-                CEP
-              </label>
-              <input
-                type="text"
-                id="cep"
-                name="cep"
-                value={customer.cep}
-                onChange={handleCepChange}
                 className="mt-1 block w-full rounded-md border-amber-400 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm"
                 required
               />
             </div>
           </div>
-
-          {customer.address.street && (
-            <div className="mt-6">
-              <h2 className="text-lg font-medium text-black">Endereço</h2>
-              <div className="mt-4">
-                <p>{customer.address.street}</p>
-                <p>{customer.address.neighborhood}</p>
-                <p>{customer.address.city} - {customer.address.state}</p>
-              </div>
-            </div>
-          )}
 
           <div className="mt-8">
             <button

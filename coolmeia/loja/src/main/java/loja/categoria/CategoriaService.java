@@ -2,6 +2,8 @@ package loja.categoria;
 
 
 import static org.apache.commons.lang3.Validate.notNull;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -31,5 +33,9 @@ public class CategoriaService {
 		notNull(id, "A categoria id não pode ser nula");
 		
 		return categoriaRepository.excluir(id);
+	}
+	
+	public List<Categoria> obterTodas(){
+		return categoriaRepository.obterTodas();
 	}
 }

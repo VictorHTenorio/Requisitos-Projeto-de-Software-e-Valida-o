@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/coolmeia/carrinhos")
 public class CarrinhoController {
     
