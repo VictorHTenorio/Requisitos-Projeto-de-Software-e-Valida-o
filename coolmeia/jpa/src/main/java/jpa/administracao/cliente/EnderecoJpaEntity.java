@@ -20,7 +20,7 @@ public class EnderecoJpaEntity {
     @Column(nullable = false)
     private int numero;
 
-    protected EnderecoJpaEntity() {}
+    public EnderecoJpaEntity() {}
 
     public String getCep() {
         return cep;

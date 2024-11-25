@@ -8,7 +8,7 @@ import loja.carrinho.Item;
 import loja.produto.Produto;
 import loja.produto.ProdutoService;
 
-
+@Service
 public class CompraService {
 	private final CompraRepository compraRepository;
 	private final CarrinhoService carrinhoService;

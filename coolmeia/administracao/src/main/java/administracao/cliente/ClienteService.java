@@ -1,6 +1,6 @@
 package administracao.cliente;
 
-import org.jmolecules.ddd.annotation.Service;
+
 import loja.carrinho.Carrinho;
 import loja.carrinho.CarrinhoId;
 import loja.carrinho.CarrinhoService;
@@ -8,6 +8,8 @@ import loja.carrinho.Item;
 import loja.produto.Produto;
 import loja.produto.ProdutoService;
 import static org.apache.commons.lang3.Validate.notNull;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class ClienteService {
