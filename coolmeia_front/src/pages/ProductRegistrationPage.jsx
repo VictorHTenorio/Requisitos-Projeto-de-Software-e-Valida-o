@@ -44,6 +44,7 @@ const ProductRegistrationPage = () => {
     categorias: []
   };
 
+  
   const [product, setProduct] = useState(initialProductState);
   const [category, setCategory] = useState('');
   const [color, setColor] = useState({ nome: '', hex: '' });

@@ -9,6 +9,7 @@ import ProductRegistrationPage from './pages/ProductRegistrationPage';
 import LoginPage from './pages/LoginPage';
 import CouponRegistrationPage from './pages/CouponRegistrationPage';
 import CategoryRegistrationPage from './pages/CategoryRegistrationPage';
+import AdminMenuPage from './pages/AdminMenuPage';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/cupons" element={<CouponRegistrationPage />} />
         <Route path="/categorias" element={<CategoryRegistrationPage />} />
+        <Route path="/admin" element={<AdminMenuPage />} />
       </Routes>
     </BrowserRouter>
   );

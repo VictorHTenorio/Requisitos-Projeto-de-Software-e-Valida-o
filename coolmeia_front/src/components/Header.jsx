@@ -24,7 +24,7 @@ const Header = () => {
           <div className="flex-1 flex justify-end items-center space-x-8">
             <nav className="flex space-x-8">
               <Link to="/login" className="text-amber-400 hover:text-amber-300">Login</Link>
-              <Link to="/cadastro-produto" className="text-amber-400 hover:text-amber-300">Cadastro-produto</Link>
+              <Link to="/admin" className="text-amber-400 hover:text-amber-300">Admin</Link>
               <Link to="/wishlist" className="text-amber-400 hover:text-amber-300">WISHLIST</Link>
             </nav>
             <div className="flex items-center space-x-4">
