@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import axios from 'axios';
+import ProductDetailsPopup from '../components/ProductDetailsPopup';
 
 const NewProductsPage = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const NewProductsPage = () => {
 
         setProductsData(products);
       } catch (error) {
-        console.error('Error fetching new products:', error);
+        console.error('Erro ao carregar novos produtos:', error);
       } finally {
         setLoading(false);
       }
@@ -46,7 +47,7 @@ const NewProductsPage = () => {
         }));
         setCategories(categoriesData);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Erro ao carregar categorias:', error);
       }
     };
 
@@ -121,7 +122,10 @@ const NewProductsPage = () => {
                     />
                     <div className="p-4">
                       <h3 className="font-medium text-black">{product.nome}</h3>
-                      <p className="text-lg font-bold text-amber-600 mt-1">R$ {product.valor.toFixed(2)}</p>
+                      <p className="text-lg font-bold text-amber-600 mt-1">
+                        R$ {product.valor.toFixed(2)}
+                      </p>
+                      <ProductDetailsPopup productId={product.id.id} />
                     </div>
                   </div>
                 ))}

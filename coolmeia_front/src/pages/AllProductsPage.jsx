@@ -180,26 +180,27 @@ const AllProductsPage = () => {
 
         {/* Grid de produtos */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {currentProducts.map((product) => (
-            <div 
-              key={product.id.id} 
-              className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-amber-400 hover:border-black transition-colors duration-300"
-            >
-              <img
-                src={product.image}
-                alt={product.nome}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="font-medium text-black">{product.nome}</h3>
-                <p className="text-lg font-bold text-amber-600 mt-1">
-                  R$ {product.valor.toFixed(2)}
-                </p>
-                <ProductDetailsPopup product={product} />
-              </div>
-            </div>
-          ))}
-        </div>
+  {currentProducts.map((product) => (
+    <div
+      key={product.id.id}
+      className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-amber-400 hover:border-black transition-colors duration-300"
+    >
+      <img
+        src={product.image || 'https://via.placeholder.com/200'}
+        alt={product.nome}
+        className="w-full h-48 object-cover"
+      />
+      <div className="p-4">
+        <h3 className="font-medium text-black">{product.nome}</h3>
+        <p className="text-lg font-bold text-amber-600 mt-1">
+          R$ {product.valor.toFixed(2)}
+        </p>
+        <ProductDetailsPopup productId={product.id.id} />
+      </div>
+    </div>
+  ))}
+</div>
+
 
         {/* Paginação */}
         <div className="flex justify-center mt-8 gap-2">
