@@ -64,6 +64,28 @@ public class ProdutoJpaRepository implements ProdutoRepository {
     }
     
     @Override
+    public List<Produto> obterTodos() {
+        try {
+            // Criar uma consulta JPQL para buscar todos os produtos
+            TypedQuery<ProdutoJpaEntity> query = entityManager.createQuery(
+                "SELECT p FROM ProdutoJpaEntity p",
+                ProdutoJpaEntity.class
+            );
+            
+            // Executar a query e converter cada entidade JPA para entidade de domínio
+            return query.getResultList()
+                .stream()
+                .map(mapper::toDomainEntity)
+                .collect(Collectors.toList());
+                
+        } catch (Exception e) {
+            System.err.println("Erro ao obter todos os produtos: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+    
+    @Override
     public boolean excluir(ProdutoId id) {
         notNull(id, "O id do produto não pode ser nulo");
         
@@ -143,4 +165,5 @@ public class ProdutoJpaRepository implements ProdutoRepository {
         
         return listaNovidades;
     }
+
 }

@@ -212,6 +212,12 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public List<Produto> obterTodos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

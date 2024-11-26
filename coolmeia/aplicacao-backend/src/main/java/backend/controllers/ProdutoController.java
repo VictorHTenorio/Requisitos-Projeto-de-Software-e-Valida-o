@@ -121,4 +121,14 @@ public class ProdutoController {
             return ResponseEntity.badRequest().build();
         }
     }
+    
+    @GetMapping("/todos")
+    public ResponseEntity<List<Produto>> obterTodos() {
+        try {
+            List<Produto> produtos = produtoService.obterTodos();
+            return ResponseEntity.ok(produtos);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

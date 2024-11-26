@@ -8,6 +8,8 @@ public interface ProdutoRepository {
 	
 	Produto obter(ProdutoId id);
 	
+	List<Produto> obterTodos();
+	
 	boolean excluir(ProdutoId id);
 	
 	List<Produto> obterPorCategoria(CategoriaId categoria);
