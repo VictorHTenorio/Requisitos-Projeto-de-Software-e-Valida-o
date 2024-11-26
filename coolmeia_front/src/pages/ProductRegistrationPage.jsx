@@ -93,11 +93,14 @@ const ProductRegistrationPage = () => {
 
   const handleCategoryAdd = () => {
     if (category) {
-      const selectedCategory = availableCategories.find(cat => cat.id.toString() === category);
-      if (selectedCategory && !product.categorias.some(cat => cat.id === selectedCategory.id)) {
-        setProduct(prevProduct => ({
+      const selectedCategory = availableCategories.find(
+        (cat) => cat.id.id.toString() === category // Ajuste para acessar o campo aninhado
+      );
+  
+      if (selectedCategory && !product.categorias.some((cat) => cat.id === selectedCategory.id.id)) {
+        setProduct((prevProduct) => ({
           ...prevProduct,
-          categorias: [...prevProduct.categorias, { id: selectedCategory.id }]
+          categorias: [...prevProduct.categorias, { id: selectedCategory.id.id }] // Usar o `id` correto
         }));
       }
       setCategory('');
@@ -277,7 +280,7 @@ const ProductRegistrationPage = () => {
                 >
                   <option value="">Selecione uma categoria</option>
                   {availableCategories.map(cat => (
-                    <option key={cat.id} value={cat.id}>
+                    <option key={cat.id.id} value={cat.id.id}>
                       {cat.nome}
                     </option>
                   ))}
@@ -291,21 +294,22 @@ const ProductRegistrationPage = () => {
                 </button>
               </div>
               <div className="mt-2 flex flex-wrap gap-2">
-                {product.categorias.map((category) => (
-                  <div
-                    key={category.id}
-                    className="inline-flex items-center px-2 py-1 rounded-md bg-amber-200 text-black text-sm"
-                  >
-                    {availableCategories.find(cat => cat.id === category.id)?.nome || `Categoria ${category.id}`}
-                    <button
-                      type="button"
-                      onClick={() => handleCategoryRemove(category)}
-                      className="ml-1 text-black hover:text-red-500"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
+              {product.categorias.map((category) => (
+  <div
+    key={category.id}
+    className="inline-flex items-center px-2 py-1 rounded-md bg-amber-200 text-black text-sm"
+  >
+    {availableCategories.find((cat) => cat.id.id === category.id)?.nome || `Categoria ${category.id}`}
+    <button
+      type="button"
+      onClick={() => handleCategoryRemove(category)}
+      className="ml-1 text-black hover:text-red-500"
+    >
+      <X className="h-4 w-4" />
+    </button>
+  </div>
+))}
+
               </div>
             </div>
             <div>
