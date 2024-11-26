@@ -215,6 +215,10 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
 
 	@Override
 	public String findSenhaByCpf(String cpf) {
+		return null;
+	}	
+	
+	public List<Produto> obterTodos() {
 		// TODO Auto-generated method stub
 		return null;
 	}

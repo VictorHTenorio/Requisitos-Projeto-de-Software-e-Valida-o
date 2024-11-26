@@ -7,6 +7,9 @@ import CartPage from './pages/CartPage';
 import CustomerRegistrationPage from './pages/CustomerRegistrationPage';
 import ProductRegistrationPage from './pages/ProductRegistrationPage';
 import LoginPage from './pages/LoginPage';
+import CouponRegistrationPage from './pages/CouponRegistrationPage';
+import CategoryRegistrationPage from './pages/CategoryRegistrationPage';
+
 
 function App() {
   return (
@@ -19,6 +22,8 @@ function App() {
         <Route path="/cadastro" element={<CustomerRegistrationPage />} />
         <Route path="/cadastro-produto" element={<ProductRegistrationPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/cupons" element={<CouponRegistrationPage />} />
+        <Route path="/categorias" element={<CategoryRegistrationPage />} />
       </Routes>
     </BrowserRouter>
   );

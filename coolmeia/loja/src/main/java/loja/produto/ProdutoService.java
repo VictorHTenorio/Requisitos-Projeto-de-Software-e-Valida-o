@@ -72,4 +72,8 @@ public class ProdutoService {
 		 listaNovidades.setProdutos(novaLista);
 		 return salvar(listaNovidades);
 	 }
+	 
+	 public List<Produto> obterTodos() {
+		    return produtoRepository.obterTodos();
+		}
 }
