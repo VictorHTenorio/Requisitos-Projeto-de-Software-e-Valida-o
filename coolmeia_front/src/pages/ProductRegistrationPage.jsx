@@ -477,24 +477,24 @@ return (
                     {product.quantidade}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-900">
-  <div className="flex flex-wrap gap-1">
-    {product.categorias?.map((categoria) => {
-      // Aqui a categoria tem apenas { id: 17 }
-      const categoryName = availableCategories.find(
-        cat => cat.id.id === categoria.id
-      )?.nome;
-      
-      return (
-        <span
-          key={categoria.id}
-          className="inline-flex items-center px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-xs"
-        >
-          {categoryName || 'Categoria'}
-        </span>
-      );
-    })}
-  </div>
-</td>
+                    <div className="flex flex-wrap gap-1">
+                      {product.categorias?.map((categoria) => {
+                        // Aqui a categoria tem apenas { id: 17 }
+                        const categoryName = availableCategories.find(
+                          cat => cat.id.id === categoria.id
+                        )?.nome;
+                        
+                        return (
+                          <span
+                            key={categoria.id}
+                            className="inline-flex items-center px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-xs"
+                          >
+                            {categoryName || 'Categoria'}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </td>
                   <td className="px-6 py-4 text-sm text-gray-900">
                     <div className="flex flex-wrap gap-1">
                       {product.cores?.map((cor, index) => (

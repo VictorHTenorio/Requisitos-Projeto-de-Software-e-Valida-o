@@ -56,6 +56,7 @@ public class ClienteService {
 
         clienteRepository.salvar(cliente);
     }
+	
 	public boolean autenticar(String cpf, String senha) {
         notNull(cpf, "O CPF não pode ser nulo");
         notNull(senha, "A senha não pode ser nula");

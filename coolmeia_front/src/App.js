@@ -10,10 +10,12 @@ import LoginPage from './pages/LoginPage';
 import CouponRegistrationPage from './pages/CouponRegistrationPage';
 import CategoryRegistrationPage from './pages/CategoryRegistrationPage';
 import AdminMenuPage from './pages/AdminMenuPage';
+import { AuthProvider } from './contexts/AuthContext';
 
 
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<NewProductsPage />} />
@@ -28,6 +30,7 @@ function App() {
         <Route path="/admin" element={<AdminMenuPage />} />
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   );
 }
 

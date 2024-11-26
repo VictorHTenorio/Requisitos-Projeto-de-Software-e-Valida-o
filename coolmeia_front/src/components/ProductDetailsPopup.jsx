@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { Heart } from 'lucide-react';
 
 const ProductDetailsPopup = ({ productId }) => {
   const [showModal, setShowModal] = useState(false);
-  const [productDetails, setProductDetails] = useState(null); // Detalhes do produto
+  const [productDetails, setProductDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const { user } = useAuth();
 
   // Função para carregar os detalhes do produto
   const fetchProductDetails = async () => {
@@ -12,10 +16,47 @@ const ProductDetailsPopup = ({ productId }) => {
       const response = await fetch(`http://127.0.0.1:8080/coolmeia/produtos/${productId}`);
       const data = await response.json();
       setProductDetails(data);
+      
+      // Se usuário estiver logado, verifica se o produto está na lista de desejos
+      if (user) {
+        checkWishlistStatus();
+      }
     } catch (error) {
       console.error('Erro ao carregar detalhes do produto:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Verifica se o produto está na lista de desejos do usuário
+  const checkWishlistStatus = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/coolmeia/clientes/${user.cpf}/lista-desejos`);
+      const wishlist = await response.json();
+      setIsInWishlist(wishlist.some(item => item.id === productId));
+    } catch (error) {
+      console.error('Erro ao verificar lista de desejos:', error);
+    }
+  };
+
+  // Toggle produto na lista de desejos
+  const toggleWishlist = async () => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8080/coolmeia/clientes/${user.cpf}/lista-desejos/${productId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.ok) {
+        setIsInWishlist(!isInWishlist);
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar lista de desejos:', error);
     }
   };
 
@@ -35,15 +76,25 @@ const ProductDetailsPopup = ({ productId }) => {
       </button>
 
       {showModal && (
-        <div
-          className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center z-50"
-        >
+        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full relative z-60">
             {loading ? (
               <p>Carregando...</p>
             ) : productDetails ? (
               <>
-                <h2 className="text-lg font-bold mb-4">{productDetails.nome}</h2>
+                <div className="flex justify-between items-start mb-4">
+                  <h2 className="text-lg font-bold">{productDetails.nome}</h2>
+                  {user && (
+                    <button
+                      onClick={toggleWishlist}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <Heart 
+                        className={`w-6 h-6 ${isInWishlist ? 'text-red-500 fill-current' : 'text-gray-400'}`} 
+                      />
+                    </button>
+                  )}
+                </div>
                 <img
                   src={productDetails.image || 'https://via.placeholder.com/200'}
                   alt={productDetails.nome}
@@ -64,9 +115,7 @@ const ProductDetailsPopup = ({ productId }) => {
                         key={index}
                         className="w-6 h-6 rounded-full border border-gray-300"
                         style={{ backgroundColor: color.hex }}
-                      >
-                        {/* Espaço reservado para a cor */}
-                      </li>
+                      />
                     ))}
                   </ul>
                 </div>

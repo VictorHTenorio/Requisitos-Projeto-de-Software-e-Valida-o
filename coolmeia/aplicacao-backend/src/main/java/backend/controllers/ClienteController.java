@@ -3,11 +3,15 @@ package backend.controllers;
 import administracao.cliente.Cliente;
 import administracao.cliente.ClienteId;
 import administracao.cliente.ClienteService;
+import administracao.cliente.ListaDeDesejos;
 import loja.carrinho.CarrinhoId;
+import loja.produto.ProdutoId;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -119,6 +123,48 @@ public class ClienteController {
             );
             
             return ResponseEntity.ok(notificado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @PostMapping("/{cpf}/lista-desejos/{produtoId}")
+    public ResponseEntity<Void> alternarProdutoListaDesejos(
+            @PathVariable String cpf,
+            @PathVariable int produtoId) {
+        try {
+            Cliente cliente = clienteService.obter(new ClienteId(cpf));
+            if (cliente == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Toggle do produto na lista de desejos
+            ListaDeDesejos listaDeDesejos = cliente.getListaDeDesejos();
+            ProdutoId pid = new ProdutoId(produtoId);
+            
+            if (listaDeDesejos.verificarProdutoInLista(pid)) {
+                listaDeDesejos.removerProduto(pid);
+            } else {
+                listaDeDesejos.adicionarProduto(pid);
+            }
+            
+            clienteService.salvar(cliente);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/{cpf}/lista-desejos")
+    public ResponseEntity<List<ProdutoId>> obterListaDesejos(@PathVariable String cpf) {
+        try {
+            Cliente cliente = clienteService.obter(new ClienteId(cpf));
+            if (cliente == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            List<ProdutoId> produtos = cliente.getListaDeDesejos().getProdutos();
+            return ResponseEntity.ok(produtos);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }

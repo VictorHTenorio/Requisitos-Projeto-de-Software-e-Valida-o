@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -22,14 +24,14 @@ const LoginPage = () => {
       });
 
       if (response.ok) {
-        const message = await response.text(); // A resposta é uma string
-        console.log(message); // Exibe "Login bem-sucedido!" no console
-        setErrorMessage(''); // Limpa qualquer mensagem de erro anterior
-        navigate('/'); // Redireciona para a página principal (localhost:3000)
+        const message = await response.text();
+        console.log(message);
+        setErrorMessage('');
+        login(cpf); // Salva o CPF no contexto e localStorage
+        navigate('/');
       } else if (response.status === 404) {
         setErrorMessage('CPF não encontrado. Por favor, verifique o CPF digitado.');
       } else {
-        // Tenta extrair a mensagem de erro do backend
         const errorData = await response.text().catch(() => 'Erro desconhecido.');
         setErrorMessage(errorData);
       }
