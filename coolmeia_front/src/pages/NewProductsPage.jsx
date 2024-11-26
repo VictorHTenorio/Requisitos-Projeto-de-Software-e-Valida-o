@@ -55,7 +55,8 @@ const NewProductsPage = () => {
   }, []);
 
   const handleCategoryClick = (category) => {
-    navigate(`/produtos?category=${category.title.toLowerCase()}`);
+    // Navegar para a página de produtos com o filtro de categoria
+    navigate(`/produtos?category=${category.id}`);
   };
 
   const handlePageChange = (page) => {
@@ -79,7 +80,6 @@ const NewProductsPage = () => {
   return (
     <div className="min-h-screen bg-amber-50">
       <Header />
-
       <main className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-black mb-8 text-center">Novos produtos</h1>
 
@@ -170,7 +170,6 @@ const NewProductsPage = () => {
           </div>
         )}
       </main>
-
       <Footer />
     </div>
   );
