@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -11,37 +11,31 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
-      const response = await fetch(`http://localhost:8080/coolmeia/clientes/${cpf}`, {
-        method: 'GET',
+      const response = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ cpf, senha: password }),
       });
-      
+
       if (response.ok) {
-        const cliente = await response.json();
-        if (cliente.senha === password) {
-          console.log('Login bem-sucedido!', cliente);
-          navigate('/'); // Redirecionar para a página inicial após o login
-        } else {
-          setErrorMessage('Senha ou CPF inválidos.');
-        }
+        const message = await response.text(); // A resposta é uma string
+        console.log(message); // Exibe "Login bem-sucedido!" no console
+        setErrorMessage(''); // Limpa qualquer mensagem de erro anterior
+        navigate('/'); // Redireciona para a página principal (localhost:3000)
       } else if (response.status === 404) {
         setErrorMessage('CPF não encontrado. Por favor, verifique o CPF digitado.');
       } else {
-        // Tenta extrair mensagem de erro do servidor, ou usa uma mensagem padrão
-        const errorData = await response.json().catch(() => response.text());
-        const serverMessage =
-          (typeof errorData === 'string' && errorData) ||
-          errorData.message ||
-          'Erro desconhecido.';
-        setErrorMessage(serverMessage);
+        // Tenta extrair a mensagem de erro do backend
+        const errorData = await response.text().catch(() => 'Erro desconhecido.');
+        setErrorMessage(errorData);
       }
     } catch (error) {
       console.error('Erro na requisição:', error);
-      setErrorMessage('Senha ou CPF inválidos');
+      setErrorMessage('Erro de conexão. Por favor, tente novamente.');
     }
   };
 
@@ -94,13 +88,12 @@ const LoginPage = () => {
           </button>
         </form>
         <div>
-            <br />
-            Ou cadastre-se gratuitamente:{' '}   
-            <Link to="/cadastro" className="font-medium text-amber-600 hover:text-amber-500">
-             Fazer cadastro
-            </Link>
+          <br />
+          Ou cadastre-se gratuitamente:{' '}
+          <Link to="/cadastro" className="font-medium text-amber-600 hover:text-amber-500">
+            Fazer cadastro
+          </Link>
         </div>
-     
       </main>
 
       <Footer />

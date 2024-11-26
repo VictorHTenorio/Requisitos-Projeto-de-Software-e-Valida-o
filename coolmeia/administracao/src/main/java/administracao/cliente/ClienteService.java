@@ -56,6 +56,14 @@ public class ClienteService {
 
         clienteRepository.salvar(cliente);
     }
+	public boolean autenticar(String cpf, String senha) {
+        notNull(cpf, "O CPF não pode ser nulo");
+        notNull(senha, "A senha não pode ser nula");
+
+        // Chama o método no repositório para buscar a senha
+        String senhaArmazenada = clienteRepository.findSenhaByCpf(cpf);
+        return senhaArmazenada != null && senhaArmazenada.equals(senha);
+    }
 	
 	public void notificarCliente() {
 		System.out.print("Email enviado!");

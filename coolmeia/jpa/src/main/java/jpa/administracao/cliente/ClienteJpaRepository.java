@@ -3,7 +3,9 @@ package jpa.administracao.cliente;
 import administracao.cliente.Cliente;
 import administracao.cliente.ClienteId;
 import administracao.cliente.ClienteRepository;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,4 +89,18 @@ public class ClienteJpaRepository implements ClienteRepository {
         }
         return false;
     }
+    
+    public String findSenhaByCpf(String cpf) {
+        // Note o uso de c.id.cpf para acessar o CPF corretamente
+        String jpql = "SELECT c.senha FROM ClienteJpaEntity c WHERE c.id.cpf = :cpf";
+        try {
+            return entityManager.createQuery(jpql, String.class)
+                    .setParameter("cpf", cpf)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Caso o CPF não seja encontrado
+        }
+    }
+    
+  
 }

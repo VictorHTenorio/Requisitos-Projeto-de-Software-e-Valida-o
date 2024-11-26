@@ -6,4 +6,6 @@ public interface ClienteRepository {
 	Cliente obter(ClienteId id);
 	
 	boolean excluir(ClienteId id);
+	
+	String findSenhaByCpf(String cpf);
 }
