@@ -1,58 +1,186 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { ShoppingCart } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { ShoppingCart, Trash2 } from 'lucide-react';
+import { CartItemList } from '../components/cart/CartItemList';
+import { AddressForm } from '../components/cart/AddressForm';
+import { PaymentForm } from '../components/cart/PaymentForm';
+import { OrderSummary } from '../components/cart/OrderSummary';
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "Camiseta Oversized", price: 129.90, quantity: 1, image: "https://via.placeholder.com/100" },
-    { id: 2, name: "Calça Cargo", price: 259.90, quantity: 2, image: "https://via.placeholder.com/100" },
-  ]);
+  const [cart, setCart] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeStep, setActiveStep] = useState('cart');
+  
+  // Estados para cupom
   const [couponCode, setCouponCode] = useState('');
+  
+  // Estados para endereço
   const [cep, setCep] = useState('');
-  const [address, setAddress] = useState({});
+  const [number, setNumber] = useState('');
+  const [addressInfo, setAddressInfo] = useState(null);
 
-  const handleRemoveItem = (itemId) => {
-    setCartItems(cartItems.filter(item => item.id !== itemId));
+  // Estados para cartão
+  const [cardData, setCardData] = useState({
+    name: '',
+    number: '',
+    validity: '',
+    cvv: ''
+  });
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    fetchCart();
+  }, [user]);
+
+  const fetchCart = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${user.carrinhoId}`);
+      if (!response.ok) throw new Error('Erro ao carregar carrinho');
+      const data = await response.json();
+      setCart(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleQuantityChange = (itemId, newQuantity) => {
-    setCartItems(cartItems.map(item => 
-      item.id === itemId ? { ...item, quantity: newQuantity } : item
-    ));
+  const handleQuantityChange = async (produtoId, quantidade, valorUnitario) => {
+    if (quantidade < 1) return;
+    
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${user.carrinhoId}/itens`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          produtoId,
+          quantidade,
+          valorUnitario
+        }),
+      });
+
+      if (!response.ok) throw new Error('Erro ao atualizar quantidade');
+      fetchCart();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const handleApplyCoupon = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${user.carrinhoId}/cupom`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ codigo: couponCode }),
+      });
+
+      if (!response.ok) throw new Error('Cupom inválido');
+      fetchCart();
+      setCouponCode('');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
-  const handleCepChange = async (e) => {
-    const enteredCep = e.target.value;
-    setCep(enteredCep);
-
-    if (enteredCep.length === 8) {
+  const handleCepBlur = async () => {
+    if (cep.length === 8) {
       try {
-        const response = await fetch(`https://viacep.com.br/ws/${enteredCep}/json/`);
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
         const data = await response.json();
 
         if (!data.erro) {
-          setAddress({
-            street: data.logradouro,
-            neighborhood: data.bairro,
-            city: data.localidade,
-            state: data.uf,
-          });
+          setAddressInfo(data);
         } else {
-          setAddress({});
+          setError('CEP não encontrado');
+          setAddressInfo(null);
         }
       } catch (error) {
-        console.error('Erro ao buscar o endereço:', error);
+        setError('Erro ao buscar CEP');
+        setAddressInfo(null);
       }
-    } else {
-      setAddress({});
     }
   };
+
+  const handleFinishPurchase = async () => {
+    if (!addressInfo || !number) {
+      setError('Preencha o endereço completo');
+      return;
+    }
+
+    if (!cardData.name || !cardData.number || !cardData.validity || !cardData.cvv) {
+      setError('Preencha todos os dados do cartão');
+      return;
+    }
+
+    try {
+      // Criar compra
+      const compraResponse = await fetch('http://127.0.0.1:8080/coolmeia/compras', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          carrinhoId: user.carrinhoId,
+          enderecoEntrega: {
+            cep,
+            cidade: addressInfo.localidade,
+            bairro: addressInfo.bairro,
+            rua: addressInfo.logradouro,
+            numero: parseInt(number)
+          },
+          pagamento: {
+            nome: cardData.name,
+            numero: cardData.number,
+            validade: cardData.validity,
+            cvv: cardData.cvv
+          }
+        }),
+      });
+
+      if (!compraResponse.ok) throw new Error('Erro ao criar compra');
+      const compra = await compraResponse.json();
+
+      // Realizar a compra
+      const realizarResponse = await fetch(`http://127.0.0.1:8080/coolmeia/compras/${compra.id}/realizar`, {
+        method: 'POST'
+      });
+
+      if (!realizarResponse.ok) throw new Error('Erro ao finalizar compra');
+      
+      // Redirecionar para sucesso
+      navigate('/compra-sucesso');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-amber-50">
+        <Header />
+        <main className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex justify-center items-center h-64">
+            <p className="text-lg">Carregando carrinho...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -61,145 +189,64 @@ const CartPage = () => {
       <main className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-black mb-8">Carrinho de Compras</h1>
 
-        {cartItems.length === 0 ? (
-          <div className="text-center">
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
+        {(!cart?.itens || cart.itens.length === 0) ? (
+          <div className="text-center py-16">
             <ShoppingCart className="mx-auto h-12 w-12 text-amber-400" />
             <h3 className="mt-2 text-sm font-medium text-black">Seu carrinho está vazio</h3>
-            <Link to="/produtos" className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700">
-              Continuar comprando
-            </Link>
+            <div className="mt-6">
+              <Link
+                to="/produtos"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
+              >
+                Continuar comprando
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Itens do carrinho */}
-            <div className="md:col-span-2">
-              <ul className="divide-y divide-amber-200">
-                {cartItems.map((item) => (
-                  <li key={item.id} className="py-6 flex">
-                    <div className="flex-shrink-0 w-24 h-24 border border-amber-200 rounded-md overflow-hidden">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full object-center object-cover"
-                      />
-                    </div>
-
-                    <div className="ml-4 flex-1 flex flex-col">
-                      <div>
-                        <div className="flex justify-between text-base font-medium text-black">
-                          <h3>{item.name}</h3>
-                          <p className="ml-4">R$ {item.price.toFixed(2)}</p>
-                        </div>
-                      </div>
-                      <div className="flex-1 flex items-end justify-between text-sm">
-                        <div className="flex items-center border border-amber-400 rounded">
-                          <button 
-                            className="text-black px-2 py-1 hover:bg-amber-400 transition-colors"
-                            onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                            disabled={item.quantity === 1}
-                          >
-                            -
-                          </button>
-                          <span className="text-black px-4">{item.quantity}</span>
-                          <button 
-                            className="text-black px-2 py-1 hover:bg-amber-400 transition-colors" 
-                            onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                          >
-                            +
-                          </button>
-                        </div>
-                        <div className="flex">
-                          <button
-                            type="button"
-                            className="font-medium text-amber-600 hover:text-amber-500"
-                            onClick={() => handleRemoveItem(item.id)}
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Resumo do pedido */}
-            <div className="mt-10 md:mt-0">
-              <div className="bg-white shadow rounded-lg p-6">
-                <h2 className="text-lg font-medium text-black">Resumo do pedido</h2>
-
-                <div className="mt-6">
-                  <label htmlFor="coupon-code" className="block text-sm font-medium text-black">
-                    Cupom de desconto
-                  </label>
-                  <div className="mt-1 flex rounded-md shadow-sm">
-                    <input
-                      type="text"
-                      name="coupon-code"
-                      id="coupon-code"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      className="focus:ring-amber-500 focus:border-amber-500 flex-1 block w-full rounded-none rounded-l-md sm:text-sm border-amber-400"
-                      placeholder="Insira o código"
-                    />
-                    <button
-                      type="button"
-                      className="inline-flex items-center px-3 rounded-r-md border border-l-0 border-amber-400 bg-amber-50 text-black sm:text-sm"
-                    >
-                      Aplicar
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <label htmlFor="cep" className="block text-sm font-medium text-black">
-                    CEP
-                  </label>
-                  <div className="mt-1">
-                    <input
-                      type="text"
-                      name="cep"
-                      id="cep"
-                      value={cep}
-                      onChange={handleCepChange}
-                      className="focus:ring-amber-500 focus:border-amber-500 block w-full rounded-md sm:text-sm border-amber-400"
-                      placeholder="00000-000"
-                    />
-                  </div>
-                  {address.street && (
-                    <div className="mt-2">
-                      <p>{address.street}</p>
-                      <p>{address.neighborhood}</p>
-                      <p>{address.city} - {address.state}</p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="border-t border-amber-200 mt-8 pt-8">
-                  <div className="flex justify-between text-base font-medium text-black">
-                    <p>Subtotal</p>
-                    <p>R$ {calculateTotal().toFixed(2)}</p>
-                  </div>
-                  <p className="mt-0.5 text-sm text-black">Frete e impostos calculados no checkout.</p>
-                  <div className="mt-6">
-                    <button
-                      className="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-amber-600 hover:bg-amber-700"
-                    >
-                      Finalizar compra
-                    </button>
-                  </div>
-                  <div className="mt-6 flex justify-center text-sm text-center text-black">
-                    <p>
-                      ou{' '}
-                      <Link to="/produtos" className="font-medium text-amber-600 hover:text-amber-500">
-                        Continuar comprando
-                      </Link>
-                    </p>
-                  </div>
-                </div>
+            {activeStep === 'cart' && (
+              <CartItemList 
+                items={cart.itens} 
+                onQuantityChange={handleQuantityChange} 
+              />
+            )}
+            {activeStep === 'address' && (
+              <div className="md:col-span-2">
+                <AddressForm
+                  cep={cep}
+                  setCep={setCep}
+                  number={number}
+                  setNumber={setNumber}
+                  addressInfo={addressInfo}
+                  onCepBlur={handleCepBlur}
+                />
               </div>
-            </div>
+            )}
+            {activeStep === 'payment' && (
+              <div className="md:col-span-2">
+                <PaymentForm
+                  cardData={cardData}
+                  setCardData={setCardData}
+                />
+              </div>
+            )}
+            
+            <OrderSummary 
+              cart={cart}
+              activeStep={activeStep}
+              couponCode={couponCode}
+              setCouponCode={setCouponCode}
+              onApplyCoupon={handleApplyCoupon}
+              onStepChange={setActiveStep}
+              onFinishPurchase={handleFinishPurchase}
+              canProceed={addressInfo && number}
+            />
           </div>
         )}
       </main>

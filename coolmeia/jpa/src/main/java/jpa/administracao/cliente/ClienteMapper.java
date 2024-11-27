@@ -25,7 +25,7 @@ public class ClienteMapper {
         
         // Mapeia CarrinhoId como inteiro
         if (cliente.getCarrinhoId() != null) {
-            jpaEntity.setCarrinhoId(String.valueOf(cliente.getCarrinhoId().getId()));
+            jpaEntity.setCarrinhoId((cliente.getCarrinhoId().getId()));
         }
         
         // Mapeia endereços com proteção null
@@ -50,7 +50,7 @@ public class ClienteMapper {
         if (cliente.getListaDeDesejos() != null && cliente.getListaDeDesejos().getProdutos() != null) {
             jpaEntity.setListaDesejos(
                 cliente.getListaDeDesejos().getProdutos().stream()
-                    .map(produtoId -> String.valueOf(produtoId.getId()))
+                    .map(produtoId -> produtoId.getId())
                     .collect(Collectors.toList())
             );
         }
@@ -66,7 +66,7 @@ public class ClienteMapper {
             toDomainEntity(jpaEntity.getId()),
             jpaEntity.getNome(),
             jpaEntity.getEmail(),
-            new CarrinhoId(Integer.parseInt(jpaEntity.getCarrinhoId()))
+            new CarrinhoId(jpaEntity.getCarrinhoId())
         );
         
         // Adiciona dados opcionais com validação
@@ -95,8 +95,7 @@ public class ClienteMapper {
         // Mapeia lista de desejos com proteção null
         if (jpaEntity.getListaDesejos() != null) {
             jpaEntity.getListaDesejos().stream()
-                .map(Integer::parseInt)
-                .map(ProdutoId::new)
+                .map(ProdutoId::new)  // Agora usa o Integer diretamente
                 .forEach(cliente::adicionarProdutoListaDeDesejos);
         }
             

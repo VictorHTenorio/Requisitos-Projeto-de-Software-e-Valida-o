@@ -7,6 +7,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import loja.carrinho.CarrinhoId;
+import loja.carrinho.CarrinhoService;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -19,9 +22,11 @@ public class ClienteJpaRepository implements ClienteRepository {
     private EntityManager entityManager;
     
     private final ClienteMapper mapper;
+    private final CarrinhoService carrinhoService;
     
-    public ClienteJpaRepository(ClienteMapper mapper) {
+    public ClienteJpaRepository(ClienteMapper mapper, CarrinhoService carrinhoService) {
         this.mapper = mapper;
+        this.carrinhoService = carrinhoService;
     }
     
     @Override
@@ -56,6 +61,10 @@ public class ClienteJpaRepository implements ClienteRepository {
             
             jpaEntity = entityManager.merge(existente);
         } else {
+            // Se é um novo cliente, cria um novo carrinho
+            CarrinhoId novoCarrinhoId = carrinhoService.criarNovoCarrinho();
+            jpaEntity.setCarrinhoId(novoCarrinhoId.getId());
+            
             entityManager.persist(jpaEntity);
         }
         

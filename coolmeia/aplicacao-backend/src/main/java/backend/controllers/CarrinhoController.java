@@ -32,6 +32,38 @@ public class CarrinhoController {
         }
     }
     
+    @PutMapping("/{id}/itens/{produtoId}")
+    public ResponseEntity<Carrinho> atualizarQuantidadeItem(
+            @PathVariable int id,
+            @PathVariable int produtoId,
+            @RequestBody Map<String, Object> request) {
+        try {
+            int novaQuantidade = ((Number) request.get("quantidade")).intValue();
+            
+            Carrinho carrinho = carrinhoService.obter(new CarrinhoId(id));
+            Item itemExistente = carrinho.getItens().stream()
+                .filter(item -> item.getProduto().getId() == produtoId)
+                .findFirst()
+                .orElse(null);
+
+            if (itemExistente != null) {
+                // Primeiro remove o item com valor antigo
+                carrinho.removerItem(itemExistente, itemExistente.getQuantidade() * itemExistente.getValorUnitario());
+                
+                // Se a quantidade for maior que 0, adiciona com nova quantidade
+                if (novaQuantidade > 0) {
+                    Item novoItem = new Item(novaQuantidade, itemExistente.getProduto(),
+                            itemExistente.getValorUnitario(), itemExistente.getCupomCodigo());
+                    carrinho.adicionarItem(novoItem, novoItem.getQuantidade() * novoItem.getValorUnitario());
+                }
+            }
+
+            return ResponseEntity.ok(carrinhoService.salvar(carrinho));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
     @GetMapping("/{id}")
     public ResponseEntity<Carrinho> obter(@PathVariable int id) {
         try {

@@ -143,7 +143,7 @@ const WishlistPage = () => {
                   Continue navegando para<br />adicionar mais itens
                 </p>
                 <button
-                  onClick={() => navigate('/produtos')}
+                  onClick={() => navigate('/')}
                   className="mt-4 text-amber-600 hover:text-amber-700 font-medium"
                 >
                   Ver produtos
@@ -157,7 +157,7 @@ const WishlistPage = () => {
           <div className="text-center py-16">
             <p className="text-gray-500 mb-4">Sua lista de desejos está vazia</p>
             <button
-              onClick={() => navigate('/produtos')}
+              onClick={() => navigate('/')}
               className="bg-amber-400 text-white px-6 py-2 rounded-md hover:bg-amber-500 transition-colors"
             >
               Explorar produtos

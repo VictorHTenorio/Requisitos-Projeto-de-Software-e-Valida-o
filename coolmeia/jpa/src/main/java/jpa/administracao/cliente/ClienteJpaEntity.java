@@ -22,7 +22,7 @@ public class ClienteJpaEntity {
     private Date nascimento;
     
     @Column(name = "carrinho_id")
-    private String carrinhoId;
+    private int carrinhoId;
     
     @ElementCollection
     @CollectionTable(
@@ -30,7 +30,7 @@ public class ClienteJpaEntity {
         joinColumns = @JoinColumn(name = "cliente_cpf")
     )
     @Column(name = "produto_id")
-    private List<String> listaDesejos = new ArrayList<>();
+    private List<Integer> listaDesejos = new ArrayList<>();
     
     @ElementCollection
     @CollectionTable(
@@ -90,19 +90,19 @@ public class ClienteJpaEntity {
         this.nascimento = nascimento;
     }
 
-    public String getCarrinhoId() {
+    public int getCarrinhoId() {
         return carrinhoId;
     }
 
-    public void setCarrinhoId(String carrinhoId) {
+    public void setCarrinhoId(int carrinhoId) {
         this.carrinhoId = carrinhoId;
     }
 
-    public List<String> getListaDesejos() {
+    public List<Integer> getListaDesejos() {
         return listaDesejos;
     }
 
-    public void setListaDesejos(List<String> listaDesejos) {
+    public void setListaDesejos(List<Integer> listaDesejos) {
         this.listaDesejos = listaDesejos;
     }
 
