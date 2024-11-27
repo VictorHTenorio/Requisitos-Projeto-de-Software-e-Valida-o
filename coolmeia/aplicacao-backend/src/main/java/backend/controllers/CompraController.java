@@ -5,8 +5,11 @@ import loja.compra.CompraId;
 import loja.compra.CompraService;
 import loja.carrinho.CarrinhoId;
 import comum.administracao.cliente.Endereco;
+import controle.registroCompra.RegistroCompraService;
 import loja.pagamento.MetodoPagamento;
 import administracao.cliente.Cartao;
+import administracao.cliente.ClienteId;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
@@ -18,9 +21,11 @@ import java.util.Map;
 public class CompraController {
     
     private final CompraService compraService;
+    private final RegistroCompraService registroCompraService;
     
-    public CompraController(CompraService compraService) {
+    public CompraController(CompraService compraService, RegistroCompraService registroCompraService) {
         this.compraService = compraService;
+        this.registroCompraService = registroCompraService; 
     }
     
     @PostMapping
@@ -80,13 +85,22 @@ public class CompraController {
     }
     
     @PostMapping("/{id}/realizar")
-    public ResponseEntity<Void> realizarCompra(@PathVariable int id) {
+    public ResponseEntity<Void> realizarCompra(
+            @PathVariable int id,
+            @RequestBody Map<String, Object> request) {
         try {
-            compraService.realizarCompra(new CompraId(id));
+            String cpf = (String) request.get("clienteCpf");
+            
+            // Registra a compra usando o RegistroCompraService
+            registroCompraService.RegistrarCompra(
+                new CompraId(id),
+                new ClienteId(cpf)
+            );
+            
             return ResponseEntity.ok().build();
         } catch (IllegalStateException e) {
             System.err.println("Erro ao realizar compra: " + e.getMessage());
-            return ResponseEntity.unprocessableEntity().build(); // 422 para erro de processamento
+            return ResponseEntity.unprocessableEntity().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }

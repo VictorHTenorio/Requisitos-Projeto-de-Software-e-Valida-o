@@ -14,6 +14,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeStep, setActiveStep] = useState('cart');
+  const [clientData, setClientData] = useState(null);
   
   // Estados para cupom
   const [couponCode, setCouponCode] = useState('');
@@ -39,15 +40,39 @@ const CartPage = () => {
       navigate('/login');
       return;
     }
-    fetchCart();
+    fetchClientAndCart();
   }, [user]);
 
-  const fetchCart = async () => {
+  const fetchClientAndCart = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${user.carrinhoId}`);
-      if (!response.ok) throw new Error('Erro ao carregar carrinho');
-      const data = await response.json();
-      setCart(data);
+      setLoading(true);
+      // Primeiro busca os dados do cliente
+      const clientResponse = await fetch(`http://127.0.0.1:8080/coolmeia/clientes/${user.cpf}`);
+      if (!clientResponse.ok) throw new Error('Erro ao carregar dados do cliente');
+      const clientData = await clientResponse.json();
+      setClientData(clientData);
+  
+      // Depois busca o carrinho usando o ID do carrinho do cliente
+      const cartResponse = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${clientData.carrinhoId.id}`);
+      if (!cartResponse.ok) throw new Error('Erro ao carregar carrinho');
+      const cartData = await cartResponse.json();
+  
+      // Para cada item do carrinho, buscar os detalhes do produto
+      const itemsWithProducts = await Promise.all(
+        cartData.itens.map(async (item) => {
+          const productResponse = await fetch(`http://127.0.0.1:8080/coolmeia/produtos/${item.produto.id}`);
+          const productData = await productResponse.json();
+          return {
+            ...item,
+            produto: productData // Substitui o produto que só tinha ID pelo produto completo
+          };
+        })
+      );
+  
+      setCart({
+        ...cartData,
+        itens: itemsWithProducts
+      });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -55,24 +80,36 @@ const CartPage = () => {
     }
   };
 
-  const handleQuantityChange = async (produtoId, quantidade, valorUnitario) => {
-    if (quantidade < 1) return;
-    
+  const handleQuantityChange = async (produtoId, novaQuantidade) => {
     try {
-      const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${user.carrinhoId}/itens`, {
-        method: 'POST',
+      const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${clientData.carrinhoId.id}/itens/${produtoId}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          produtoId,
-          quantidade,
-          valorUnitario
+          quantidade: novaQuantidade
         }),
       });
 
       if (!response.ok) throw new Error('Erro ao atualizar quantidade');
-      fetchCart();
+      fetchClientAndCart();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleRemoveItem = async (produtoId) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8080/coolmeia/carrinhos/${clientData.carrinhoId.id}/itens/${produtoId}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      if (!response.ok) throw new Error('Erro ao remover item');
+      fetchClientAndCart();
     } catch (err) {
       setError(err.message);
     }
@@ -80,7 +117,7 @@ const CartPage = () => {
 
   const handleApplyCoupon = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${user.carrinhoId}/cupom`, {
+      const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${clientData.carrinhoId.id}/cupom`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,7 +126,7 @@ const CartPage = () => {
       });
 
       if (!response.ok) throw new Error('Cupom inválido');
-      fetchCart();
+      fetchClientAndCart();
       setCouponCode('');
     } catch (err) {
       setError(err.message);
@@ -108,7 +145,7 @@ const CartPage = () => {
           setError('CEP não encontrado');
           setAddressInfo(null);
         }
-      } catch (error) {
+      } catch (err) {
         setError('Erro ao buscar CEP');
         setAddressInfo(null);
       }
@@ -127,16 +164,15 @@ const CartPage = () => {
     }
 
     try {
-      // Criar compra
       const compraResponse = await fetch('http://127.0.0.1:8080/coolmeia/compras', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          carrinhoId: user.carrinhoId,
+          carrinhoId: clientData.carrinhoId.id,
           enderecoEntrega: {
-            cep,
+            cep: cep,
             cidade: addressInfo.localidade,
             bairro: addressInfo.bairro,
             rua: addressInfo.logradouro,
@@ -147,21 +183,27 @@ const CartPage = () => {
             numero: cardData.number,
             validade: cardData.validity,
             cvv: cardData.cvv
-          }
+          },
+          frete: 0.0
         }),
       });
 
       if (!compraResponse.ok) throw new Error('Erro ao criar compra');
       const compra = await compraResponse.json();
 
-      // Realizar a compra
-      const realizarResponse = await fetch(`http://127.0.0.1:8080/coolmeia/compras/${compra.id}/realizar`, {
-        method: 'POST'
+      // Realizar a compra incluindo o CPF do cliente
+      const realizarResponse = await fetch(`http://127.0.0.1:8080/coolmeia/compras/${compra.id.id}/realizar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clienteCpf: user.cpf
+        }),
       });
 
       if (!realizarResponse.ok) throw new Error('Erro ao finalizar compra');
       
-      // Redirecionar para sucesso
       navigate('/compra-sucesso');
     } catch (err) {
       setError(err.message);
@@ -181,6 +223,31 @@ const CartPage = () => {
       </div>
     );
   }
+  const handleRemoveCoupon = async (produtoId) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8080/coolmeia/carrinhos/${clientData.carrinhoId.id}/itens/${produtoId}/cupom`,
+        {
+          method: 'DELETE'
+        }
+      );
+
+      if (!response.ok) throw new Error('Erro ao remover cupom');
+      fetchClientAndCart();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+  
+  // No render do CartPage:
+  {activeStep === 'cart' && (
+    <CartItemList 
+      items={cart.itens} 
+      onQuantityChange={handleQuantityChange}
+      onRemoveItem={handleRemoveItem}
+      onRemoveCoupon={handleRemoveCoupon}
+    />
+  )}
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -213,7 +280,9 @@ const CartPage = () => {
             {activeStep === 'cart' && (
               <CartItemList 
                 items={cart.itens} 
-                onQuantityChange={handleQuantityChange} 
+                onQuantityChange={handleQuantityChange}
+                onRemoveItem={handleRemoveItem}
+                onRemoveCoupon={handleRemoveCoupon}
               />
             )}
             {activeStep === 'address' && (

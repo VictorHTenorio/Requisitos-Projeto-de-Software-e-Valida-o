@@ -8,6 +8,10 @@ import loja.cupom.CupomService;
 import loja.produto.Produto;
 import loja.produto.ProdutoService;
 import static org.apache.commons.lang3.Validate.notNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -50,54 +54,45 @@ public class CarrinhoService {
 	    notNull(carrinhoId, "O id do carrinho não pode ser nulo");
 
 	    Cupom cupom = cupomService.obter(cupomCodigo);
+	    if (!cupom.isValido()) return false;
+
 	    Carrinho carrinho = carrinhoRepository.obter(carrinhoId);
+	    List<Item> novosItens = new ArrayList<>();
+	    float novoValorTotal = 0.0f;
+	    boolean algumItemAlterado = false;
 
-	    // Verifica se o cupom é válido
-	    if (!cupom.isValido()) {
-	        // Retorna falso, indicando que o cupom não foi aplicado e não altera o valor
-	        return false;
-	    }
-
-	    boolean cupomAplicado = false;
-	    float valorTotalComDesconto = carrinho.getValorTotal(); // Mantém o valor original se o cupom não for aplicável
-
-	    // Tenta aplicar o desconto item por item
 	    for (Item item : carrinho.getItens()) {
-	        Produto produto = produtoService.obter(item.getProduto());
+	      if (item.getCupomCodigo() != null) {
+	        novosItens.add(item);
+	        novoValorTotal += item.getValorUnitario() * item.getQuantidade();
+	        continue;
+	      }
 
-	        if (cupom.isAplicavelAProduto(item.getProduto())) {
-	            aplicarDesconto(item, cupom);
-	            cupomAplicado = true;
-	        } else {
-	            for (CategoriaId categoriaId : produto.getCategorias()) {
-	                if (cupom.isAplicavelACategoria(categoriaId)) {
-	                    aplicarDesconto(item, cupom);
-	                    cupomAplicado = true;
-	                    break;
-	                }
-	            }
-	        }
+	      Produto produto = produtoService.obter(item.getProduto());
+	      boolean cupomValidoParaItem = false;
+	      if(!cupom.getProdutos().isEmpty()) {
+	    	  cupomValidoParaItem = cupom.isAplicavelAProduto(item.getProduto());
+	      }
+	      if(cupomValidoParaItem == false && !cupom.getCategorias().isEmpty()) {
+	    	  cupomValidoParaItem = produto.getCategorias().stream().anyMatch(cupom::isAplicavelACategoria);
+	      }
+
+	      if (cupomValidoParaItem) {
+	        float valorComDesconto = item.getValorUnitario() * (1 - cupom.getPorcentagemDesconto() / 100.0f);
+	        novosItens.add(new Item(item.getQuantidade(), item.getProduto(), valorComDesconto, cupomCodigo));
+	        novoValorTotal += valorComDesconto * item.getQuantidade();
+	        algumItemAlterado = true;
+	      } else {
+	        novosItens.add(item);
+	        novoValorTotal += item.getValorUnitario() * item.getQuantidade();
+	      }
 	    }
 
-	    // Atualiza o valor total do carrinho SOMENTE se o cupom foi aplicado
-	    if (cupomAplicado) {
-	        valorTotalComDesconto = carrinho.getItens().stream()
-	            .map(item -> item.getValorUnitario() * item.getQuantidade())
-	            .reduce(0.0f, Float::sum); // Recalcula o valor total com o desconto
-	        carrinho.setValorTotal(valorTotalComDesconto);
-	        carrinhoRepository.salvar(carrinho);
+	    if (algumItemAlterado) {
+	      carrinhoRepository.salvar(new Carrinho(carrinho.getId(), novosItens, novoValorTotal));
+	      return true;
 	    }
-
-	    return cupomAplicado;
-	}
-
-
-
-	
-	private void aplicarDesconto(Item item, Cupom cupom) {
-	    float valorOriginal = item.getValorUnitario();
-	    float desconto = valorOriginal * (cupom.getPorcentagemDesconto() / 100.0f);
-	    float valorComDesconto = valorOriginal - desconto;
-	    item.setValorUnitario(valorComDesconto);
-	}
+	    
+	    return false;
+	  }
 }

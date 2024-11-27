@@ -1,12 +1,12 @@
 package controle.registroCompra;
 
-import org.jmolecules.ddd.annotation.Service;
+
 import administracao.cliente.ClienteId;
 import administracao.cliente.ClienteService;
 import loja.compra.CompraId;
 import loja.compra.CompraService;
-
 import static org.apache.commons.lang3.Validate.notNull;
+import org.springframework.stereotype.Service;
 
 @Service
 public class RegistroCompraService {

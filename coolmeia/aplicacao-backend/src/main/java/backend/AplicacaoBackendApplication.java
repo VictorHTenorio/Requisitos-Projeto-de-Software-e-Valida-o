@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 	    "jpa",               // pacote base das entidades JPA
 	    "jpa.loja.produto",  // pacote específico do produto
 	    "jpa.loja.categoria",
+	    "jpa.controle.registrocompra",
 	    "jpa.loja.carrinho",
 	    "jpa.loja.compra",
 	    "jpa.loja.cupom",
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {
     "backend",    // para encontrar os controllers
     "administracao",
+    "controle",
     "loja",         // para encontrar os services
     "jpa"           // para encontrar os repositories
 })

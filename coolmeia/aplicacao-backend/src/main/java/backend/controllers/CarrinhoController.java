@@ -5,10 +5,16 @@ import loja.carrinho.CarrinhoId;
 import loja.carrinho.CarrinhoService;
 import loja.carrinho.Item;
 import loja.cupom.CupomCodigo;
+import loja.produto.Produto;
 import loja.produto.ProdutoId;
+import loja.produto.ProdutoService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -17,9 +23,11 @@ import java.util.Map;
 public class CarrinhoController {
     
     private final CarrinhoService carrinhoService;
+    private final ProdutoService produtoService;
     
-    public CarrinhoController(CarrinhoService carrinhoService) {
+    public CarrinhoController(CarrinhoService carrinhoService, ProdutoService produtoService) {
         this.carrinhoService = carrinhoService;
+        this.produtoService = produtoService;
     }
     
     @PostMapping
@@ -36,9 +44,9 @@ public class CarrinhoController {
     public ResponseEntity<Carrinho> atualizarQuantidadeItem(
             @PathVariable int id,
             @PathVariable int produtoId,
-            @RequestBody Map<String, Object> request) {
+            @RequestBody Map<String, Integer> request) {
         try {
-            int novaQuantidade = ((Number) request.get("quantidade")).intValue();
+            int novaQuantidade = request.get("quantidade");
             
             Carrinho carrinho = carrinhoService.obter(new CarrinhoId(id));
             Item itemExistente = carrinho.getItens().stream()
@@ -47,7 +55,7 @@ public class CarrinhoController {
                 .orElse(null);
 
             if (itemExistente != null) {
-                // Primeiro remove o item com valor antigo
+                // Remove o item antigo
                 carrinho.removerItem(itemExistente, itemExistente.getQuantidade() * itemExistente.getValorUnitario());
                 
                 // Se a quantidade for maior que 0, adiciona com nova quantidade
@@ -56,9 +64,34 @@ public class CarrinhoController {
                             itemExistente.getValorUnitario(), itemExistente.getCupomCodigo());
                     carrinho.adicionarItem(novoItem, novoItem.getQuantidade() * novoItem.getValorUnitario());
                 }
+                
+                return ResponseEntity.ok(carrinhoService.salvar(carrinho));
             }
+            
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
-            return ResponseEntity.ok(carrinhoService.salvar(carrinho));
+    @DeleteMapping("/{id}/itens/{produtoId}")
+    public ResponseEntity<Void> removerItem(
+            @PathVariable int id,
+            @PathVariable int produtoId) {
+        try {
+            Carrinho carrinho = carrinhoService.obter(new CarrinhoId(id));
+            Item itemExistente = carrinho.getItens().stream()
+                .filter(item -> item.getProduto().getId() == produtoId)
+                .findFirst()
+                .orElse(null);
+
+            if (itemExistente != null) {
+                carrinho.removerItem(itemExistente, itemExistente.getQuantidade() * itemExistente.getValorUnitario());
+                carrinhoService.salvar(carrinho);
+                return ResponseEntity.ok().build();
+            }
+            
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -129,6 +162,36 @@ public class CarrinhoController {
             
         } catch (IllegalArgumentException e) {
             System.err.println("Erro ao aplicar cupom: " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    
+    @DeleteMapping("/{id}/itens/{produtoId}/cupom")
+    public ResponseEntity<Carrinho> removerCupomItem(
+            @PathVariable int id,
+            @PathVariable int produtoId) {
+        try {
+            Carrinho carrinho = carrinhoService.obter(new CarrinhoId(id));
+            
+            List<Item> novosItens = new ArrayList<>();
+            float novoValorTotal = 0.0f;
+            
+            for (Item item : carrinho.getItens()) {
+                if (item.getProduto().getId() == produtoId && item.getCupomCodigo() != null) {
+                    // Cria novo item sem cupom e com valor original
+                    Produto produto = produtoService.obter(item.getProduto());
+                    Item novoItem = new Item(item.getQuantidade(), item.getProduto(), produto.getValor(), null);
+                    novosItens.add(novoItem);
+                    novoValorTotal += produto.getValor() * item.getQuantidade();
+                } else {
+                    novosItens.add(item);
+                    novoValorTotal += item.getValorUnitario() * item.getQuantidade();
+                }
+            }
+            
+            Carrinho carrinhoAtualizado = new Carrinho(carrinho.getId(), novosItens, novoValorTotal);
+            return ResponseEntity.ok(carrinhoService.salvar(carrinhoAtualizado));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }

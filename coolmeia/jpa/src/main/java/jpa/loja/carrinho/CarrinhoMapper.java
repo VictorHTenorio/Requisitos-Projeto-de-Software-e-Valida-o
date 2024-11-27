@@ -63,7 +63,7 @@ public class CarrinhoMapper {
         jpaEntity.setValorUnitario(item.getValorUnitario());
         
         if (item.getCupomCodigo() != null) {
-            jpaEntity.setCupomCodigo(item.getCupomCodigo().toString());
+            jpaEntity.setCupomCodigo(item.getCupomCodigo().getId());
         }
         
         return jpaEntity;
