@@ -9,6 +9,10 @@ O presente projeto é fruto da disciplina de Requisitos, Projeto de Software e V
 </p>
 
 ## Requisitos   
+
+### Apresentação da AV2
+<li><a href="https://github.com/VictorHTenorio/Requisitos-Projeto-de-Software-e-Valida-o/blob/main/Coolmeia%202.pdf" target="_blank">Slides apresentados em aula</a></li>
+
 ### Descrição do domínio
 <p align="justify">
 No cenário de e-commerce, a jornada de compra do usuário envolve diversas etapas até a finalização do pedido. Inicialmente, o usuário escolhe os produtos de interesse e os adiciona ao carrinho de compras. Ele pode continuar navegando e incluir múltiplos itens no carrinho. Ao revisar os produtos selecionados, o usuário tem a opção de inserir um cupom de desconto para reduzir o valor final da compra. Nesse momento, o frete é calculado e diferentes formas de entrega são oferecidas. O próximo passo é a escolha do endereço de entrega e a forma de pagamento. Com o pagamento confirmado, o pedido é processado. Após a entrega, o usuário tem a oportunidade de deixar uma avaliação do produto, contribuindo para a experiência de outros compradores.
