@@ -35,7 +35,7 @@ public class ListaNovidadeFuncionalidade extends LojaFuncionalidade{
 	
 	@Given("Um produto antigo esta na novos produtos")
 	public void produto_antigo_na_lista_de_novos_produtos() {
-		produto = new Produto(new ProdutoId(2), "Produto Antigo", "Descrição", 10, 100.0f, List.of(), List.of(), LocalDate.now().minusDays(40));
+		produto = new Produto(new ProdutoId(2), "Produto Antigo", "Descrição", 10, 100.0f, List.of(), List.of(), LocalDate.now().minusDays(40), false);
 		
 		listaNovidades = ListaNovidades.getInstance();
 		

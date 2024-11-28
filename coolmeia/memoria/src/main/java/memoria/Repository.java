@@ -169,7 +169,7 @@ public class Repository implements ClienteRepository, RegistroCompraRepository, 
         notNull(produto, "O produto não pode ser nulo");
         if (produto.getId() == null) {
             ProdutoId novoId = new ProdutoId(produtoIdCounter++);
-            produto = new Produto(novoId, produto.getNome(), produto.getDescricao(),produto.getQuantidade(),produto.getValor(), produto.getCores(), produto.getCategorias(), produto.getDataAdicao());
+            produto = new Produto(novoId, produto.getNome(), produto.getDescricao(),produto.getQuantidade(),produto.getValor(), produto.getCores(), produto.getCategorias(), produto.getDataAdicao(), false);
         }
         produtos.put(produto.getId(), produto);
         return produto;

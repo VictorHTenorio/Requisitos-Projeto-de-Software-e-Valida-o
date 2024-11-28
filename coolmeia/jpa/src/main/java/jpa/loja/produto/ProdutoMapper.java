@@ -11,7 +11,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 @Component
 public class ProdutoMapper {
     
-	public ProdutoJpaEntity toJpaEntity(Produto produto) {
+    public ProdutoJpaEntity toJpaEntity(Produto produto) {
         notNull(produto, "Produto não pode ser nulo");
         
         ProdutoJpaEntity jpaEntity = new ProdutoJpaEntity();
@@ -25,6 +25,7 @@ public class ProdutoMapper {
         jpaEntity.setQuantidade(produto.getQuantidade());
         jpaEntity.setValor(produto.getValor());
         jpaEntity.setDataAdicao(produto.getDataAdicao());
+        jpaEntity.setNotificadoBaixoEstoque(produto.isNotificadoBaixoEstoque());
         
         // Mapeia cores
         if (produto.getCores() != null) {
@@ -47,7 +48,7 @@ public class ProdutoMapper {
         return jpaEntity;
     }
     
-	public Produto toDomainEntity(ProdutoJpaEntity jpaEntity) {
+    public Produto toDomainEntity(ProdutoJpaEntity jpaEntity) {
         if (jpaEntity == null) return null;
         
         List<Cor> cores = jpaEntity.getCores().stream()
@@ -77,7 +78,8 @@ public class ProdutoMapper {
             jpaEntity.getValor(),
             cores,
             categorias,
-            jpaEntity.getDataAdicao()
+            jpaEntity.getDataAdicao(),
+            jpaEntity.isNotificadoBaixoEstoque() // Novo parâmetro adicionado
         );
     }
     

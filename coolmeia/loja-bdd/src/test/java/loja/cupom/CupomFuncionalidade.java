@@ -24,7 +24,7 @@ public class CupomFuncionalidade extends LojaFuncionalidade{
     @Given("Um carrinho de compras com produtos")
     public void um_carrinho_de_compras_com_produtos() {
         ProdutoId produtoId = new ProdutoId(1);
-        produto = new Produto(produtoId, "Produto Teste", "Descrição", 10, 100.0f, List.of(), List.of(), java.time.LocalDate.now());
+        produto = new Produto(produtoId, "Produto Teste", "Descrição", 10, 100.0f, List.of(), List.of(), java.time.LocalDate.now(), false);
         produtoService.salvar(produto);
 
         CarrinhoId carrinhoId = new CarrinhoId(1);

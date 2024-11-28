@@ -26,7 +26,7 @@ public class CompraFuncionalidade extends LojaFuncionalidade{
     public void um_produto_disponivel(String classe, String disponibilidade) {
         ProdutoId produtoId = new ProdutoId(1);
 
-        produto = new Produto(produtoId, "Produto Teste", "Descrição", 10, 100.0f, List.of(), List.of(), java.time.LocalDate.now());
+        produto = new Produto(produtoId, "Produto Teste", "Descrição", 10, 100.0f, List.of(), List.of(), java.time.LocalDate.now(), false);
         produtoService.salvar(produto);
 
         if ("não está".equals(disponibilidade)) {

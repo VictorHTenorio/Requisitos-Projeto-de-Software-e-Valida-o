@@ -42,6 +42,9 @@ public class ProdutoJpaEntity {
     
     @Column(name = "data_adicao", nullable = false)
     private LocalDate dataAdicao;
+    
+    @Column(name = "notificado_baixo_estoque", nullable = false)
+    private boolean notificadoBaixoEstoque = false;
 
     // Construtor protegido para JPA
     protected ProdutoJpaEntity() {}
@@ -70,4 +73,12 @@ public class ProdutoJpaEntity {
     
     public LocalDate getDataAdicao() { return dataAdicao; }
     public void setDataAdicao(LocalDate dataAdicao) { this.dataAdicao = dataAdicao; }
+    
+    public boolean isNotificadoBaixoEstoque() { 
+        return notificadoBaixoEstoque; 
+    }
+    
+    public void setNotificadoBaixoEstoque(boolean notificadoBaixoEstoque) { 
+        this.notificadoBaixoEstoque = notificadoBaixoEstoque; 
+    }
 }

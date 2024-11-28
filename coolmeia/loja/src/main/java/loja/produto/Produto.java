@@ -2,6 +2,7 @@ package loja.produto;
 
 import org.jmolecules.ddd.types.AggregateRoot;
 
+import comum.administracao.notificacao.GerenciadorNotificacoes;
 import loja.categoria.CategoriaId;
 
 import static org.apache.commons.lang3.Validate.notBlank;
@@ -22,6 +23,7 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 	private List<Cor> cores;
 	private List<CategoriaId> categorias;
 	private LocalDate dataAdicao;
+	private boolean notificadoBaixoEstoque;
 	
 	public Produto(String nome, String descricao, int quantidade, float valor, List<Cor> cores, List<CategoriaId> categorias) {
 		this.id = null;
@@ -32,9 +34,10 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 		setCores(cores);
         setCategorias(categorias);
         this.dataAdicao = java.time.LocalDate.now();
+        this.notificadoBaixoEstoque = false;
 	}
 	
-	public Produto(ProdutoId id, String nome, String descricao, int quantidade, float valor, List<Cor> cores, List<CategoriaId> categorias, LocalDate dataAdicao) {
+	public Produto(ProdutoId id, String nome, String descricao, int quantidade, float valor, List<Cor> cores, List<CategoriaId> categorias, LocalDate dataAdicao, boolean notificadoBaixoEstoque) {
 		notNull(id, "O id não pode ser nulo");
 		this.id = id;
 		setNome(nome);
@@ -44,6 +47,7 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 		setCores(cores);
         setCategorias(categorias);
         setDataAdicao(dataAdicao);
+        this.notificadoBaixoEstoque = notificadoBaixoEstoque;
 	}
 
 	private void setNome(String nome) {
@@ -112,6 +116,10 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
 		return dataAdicao;
 	}
 	
+	public boolean isNotificadoBaixoEstoque() {
+	    return notificadoBaixoEstoque;
+	}
+	
 	public List<Cor> getCores() {
         return new ArrayList<>(cores);
     }
@@ -130,15 +138,28 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
         categorias.add(categoriaId);
     }
 	
-	public void diminuirQuantidade(int quantidadeCompra) {
-	    isTrue(quantidade - quantidadeCompra >= 0, "A quantidade comprada não pode ser maior que o estoque");
-	    this.quantidade -= quantidadeCompra;
-	}
-	
-	public void aumentarQuantidade(int quantidadeAdicionada) {
-	    isTrue(quantidadeAdicionada > 0, "A quantidade não pode ser negativa");
-	    this.quantidade -= quantidadeAdicionada;
-	}
+    public void diminuirQuantidade(int quantidadeCompra) {
+        isTrue(quantidade - quantidadeCompra >= 0, "A quantidade comprada não pode ser maior que o estoque");
+        this.quantidade -= quantidadeCompra;
+
+        if (!notificadoBaixoEstoque && this.quantidade < 10) {
+            String mensagem = String.format(
+                "Últimas %d peças!", 
+                this.nome, 
+                this.quantidade
+            );
+            GerenciadorNotificacoes.getInstance()
+                .notificarObservadores(this.id.toString(), mensagem);
+        }
+    }
+    
+    public void aumentarQuantidade(int quantidadeAdicionada) {
+        isTrue(quantidadeAdicionada > 0, "A quantidade não pode ser negativa");
+        this.quantidade += quantidadeAdicionada;
+        
+        if (this.quantidade >= 10) {
+        }
+    }
 	
 	public boolean verificarPoucaQuantidade(int poucaQuantidade) {
 		isTrue(poucaQuantidade > 0, "A quantidade não pode ser menor que 0");
