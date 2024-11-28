@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Projeto Pai para Módulos -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>com.example</groupId>
+    <artifactId>coolmeia</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>  <!-- Alterado para "pom" -->
+
+    <name>coolmeia</name>
+    <description>Loja de roupas</description>
+
+    <!-- Listagem dos Submódulos -->
+    <modules>
+        <module>comum</module>
+        <module>loja</module>
+        <module>loja-bdd</module>
+        <module>administracao</module>
+        <module>controle</module>
+        <module>memoria</module>
+        <module>administracao-bdd</module>
+        <module>jpa</module>
+        <module>aplicacao-backend</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- Dependências comuns que serão usadas por todos os submódulos -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                	<mainClass>com.example.loja.LojaApplication</mainClass> <!-- Substitua pelo seu pacote e nome da classe -->
+            	</configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

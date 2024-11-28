@@ -1,0 +1,30 @@
+@startuml
+
+skinparam componentStyle uml2
+
+package "'Produto' Aggregate" <<Rectangle>> {
+	class Produto <<(A,#fffab8) Aggregate Root>> {
+		String nome
+		String descricao
+		int quantidade
+		float valor
+		ProdutoId id
+		List<Cor> cores
+		List<CategoriaId> categorias
+	}
+	class ProdutoId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+	class Cor <<(V,DarkSeaGreen) Value Object>> {
+		String nome
+		String hex
+	}
+	class ProdutoService <<(S,DarkSeaGreen) Service>> {
+		List<Produto> obterProdutosPorCategoria(CategoriaId categoria)
+	}
+}
+Produto --> ProdutoId : id
+Produto "1" *--> "*" Cor : cores
+
+
+@enduml

@@ -1,0 +1,106 @@
+@startuml
+
+skinparam componentStyle uml2
+
+package "'Produto' Aggregate" <<Rectangle>> {
+	class Produto <<(A,#fffab8) Aggregate Root>> {
+		String nome
+		String descricao
+		int quantidade
+		float valor
+		ProdutoId id
+		List<Cor> cores
+		List<CategoriaId> categorias
+	}
+	class ProdutoId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+	class Cor <<(V,DarkSeaGreen) Value Object>> {
+		String nome
+		String hex
+	}
+	class ProdutoService <<(S,DarkSeaGreen) Service>> {
+		List<Produto> obterProdutosPorCategoria(CategoriaId categoria)
+	}
+}
+package "'Categoria' Aggregate" <<Rectangle>> {
+	class Categoria <<(A,#fffab8) Aggregate Root>> {
+		String nome
+		CategoriaId id
+	}
+	class CategoriaId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+}
+package "'Carrinho' Aggregate" <<Rectangle>> {
+	class Carrinho <<(A,#fffab8) Aggregate Root>> {
+		float valorTotal
+		CarrinhoId id
+		List<Item> itens
+	}
+	class CarrinhoId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+	class Item <<(V,DarkSeaGreen) Value Object>> {
+		int quantidade
+		float valorUnitario
+		ProdutoId produto
+		CupomCodigo cupom
+	}
+	class CarrinhoService <<(S,DarkSeaGreen) Service>> {
+		CarrinhoId criarNovoCarrinho()
+		boolean aplicarCupom(CupomCodigo cupomCodigo, CarrinhoId carrinhoId)
+		void aplicarDesconto(Item item, Cupom cupom)
+	}
+}
+package "'Compra' Aggregate" <<Rectangle>> {
+	class Compra <<(A,#fffab8) Aggregate Root>> {
+		float frete
+		CompraId id
+		CarrinhoId id
+		Endereco enderecoEntrega
+		Cartao pagamento
+	}
+	class CompraId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+	class CompraService <<(S,DarkSeaGreen) Service>> {
+		void realizarCompra(CompraId compraId)
+	}
+}
+package "'Cupom' Aggregate" <<Rectangle>> {
+	class Cupom <<(A,#fffab8) Aggregate Root>> {
+		int porcentagemDesconto
+		CupomCodigo id
+		Periodo periodoValidade
+		List<CategoriaId> categorias
+		List<ProdutoId> produtos
+	}
+	class CupomCodigo <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+	class Periodo <<(V,DarkSeaGreen) Value Object>> {
+		LocalDate inicio
+		LocalDate fim
+	}
+}
+Produto --> ProdutoId : id
+Produto "1" *--> "*" Cor : cores
+Compra --> CarrinhoId : id
+Item --> CupomCodigo : cupom
+Carrinho "1" *--> "*" Item : itens
+Cupom "1" o--> "*" ProdutoId : produtos
+Categoria --> CategoriaId : id
+Item --> ProdutoId : produto
+Cupom "1" o--> "*" CategoriaId : categorias
+Carrinho --> CarrinhoId : id
+Cupom --> CupomCodigo : id
+Cupom --> Periodo : periodoValidade
+Produto "1" o--> "*" CategoriaId : categorias
+Compra --> CompraId : id
+legend left
+  This bounded context implements the subdomain 'Loja'.
+end legend
+
+
+@enduml

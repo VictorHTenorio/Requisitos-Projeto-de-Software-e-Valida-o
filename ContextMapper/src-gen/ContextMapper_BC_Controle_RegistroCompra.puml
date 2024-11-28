@@ -1,0 +1,22 @@
+@startuml
+
+skinparam componentStyle uml2
+
+package "'RegistroCompra' Aggregate" <<Rectangle>> {
+	class RegistroCompra <<(A,#fffab8) Aggregate Root>> {
+		LocalDateTime dataHoraRealizacao
+		RegistroCompraId id
+		CompraId compra
+		ClienteId cliente
+	}
+	class RegistroCompraId <<(V,DarkSeaGreen) Value Object>> {
+		int id
+	}
+	class RegistroCompraService <<(S,DarkSeaGreen) Service>> {
+		void RegistrarCompra(CompraId compraId, ClienteId clienteId)
+	}
+}
+RegistroCompra --> RegistroCompraId : id
+
+
+@enduml

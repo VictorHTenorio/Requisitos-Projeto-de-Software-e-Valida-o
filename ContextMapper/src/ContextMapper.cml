@@ -1,0 +1,206 @@
+Domain GerenciamentoLoja{
+	Subdomain Administracao
+	Subdomain Controle
+	Subdomain Loja
+}
+
+ContextMap {
+	contains Administracao
+	contains Controle	
+	contains Loja	
+	
+	Loja Shared-Kernel Administracao
+	Controle Shared-Kernel Administracao	
+	Controle Shared-Kernel Loja
+}
+
+BoundedContext Administracao implements Administracao{
+	Aggregate Cliente{
+		
+		Service ClienteService{
+			void limparCarrinho(@ClienteId clienteId);
+			void notificarCliente();
+			boolean verificarNotificarPoucosProdutosCarrinho(@ClienteId clienteId, @CarrinhoId carrinhoId);
+		}
+		
+		Entity Cliente{
+			aggregateRoot
+			
+			-ClienteId id
+		    String nome
+		    String userEmail
+		    String senha
+		    Date nascimento
+		    -CarrinhoId carrinhoId
+		    -ListaDeDesejos listaDeDesejos
+		    -List<Endereco> enderecos
+		    -List<Cartao> cartoes
+		    
+		    def void adicionarEndereco(@Endereco endereco);
+		    def void removerEndereco(@Endereco endereco);
+		    def void adicionarCartao(@Cartao cartao);
+		    def void removerCartao(@Cartao cartao);
+		    def void adicionarProdutoListaDeDesejos(@ProdutoId produto);
+		    def void removerProdutoListaDeDesejos(@ProdutoId produto);
+			
+		}
+		
+		ValueObject ClienteId{
+			String cpf
+		}
+		
+		ValueObject Endereco{
+			String cep
+		    String cidade
+		    String bairro
+		    String rua
+		    int numero
+		}
+		
+		ValueObject Cartao{
+			String nome
+		    String numero
+		    String validade
+		    String cvv
+		}
+		
+		ValueObject ListaDeDesejos{
+			-List<ProdutoId> produtos
+		}
+	}
+}
+
+BoundedContext Controle implements Controle{
+	Aggregate RegistroCompra{
+		Service RegistroCompraService{
+			void RegistrarCompra(@CompraId compraId, @ClienteId clienteId);
+		}
+		
+		Entity RegistroCompra{
+			aggregateRoot
+			
+			-RegistroCompraId id
+		    LocalDateTime dataHoraRealizacao
+		    -CompraId compra
+		    -ClienteId cliente
+		}
+		
+		ValueObject RegistroCompraId{
+			int id
+		}
+	}
+}
+
+BoundedContext Loja implements Loja{
+	Aggregate Produto{
+		Service ProdutoService{
+			List<@Produto> obterProdutosPorCategoria(@CategoriaId categoria);
+		}
+		
+		Entity Produto{
+			aggregateRoot
+			
+			-ProdutoId id
+			String nome
+			String descricao
+			int quantidade
+			float valor
+			-List<Cor> cores
+			-List<CategoriaId> categorias
+			
+			Repository ProdutoRepository{
+				List<@Produto> obterPorCategoria(@CategoriaId categoria);
+			}
+		}
+		
+		ValueObject ProdutoId{
+			int id
+		}
+		
+		ValueObject Cor{
+			String nome
+			String hex
+		}
+	}
+	
+	Aggregate Categoria{
+		Entity Categoria{
+			aggregateRoot
+			
+			-CategoriaId id
+			String nome
+		}
+		
+		ValueObject CategoriaId{
+			int id
+		}
+	}
+	
+	Aggregate Carrinho{
+		Service CarrinhoService{
+			@CarrinhoId criarNovoCarrinho();
+			boolean aplicarCupom(@CupomCodigo cupomCodigo, @CarrinhoId carrinhoId);
+			void aplicarDesconto(@Item item, @Cupom cupom);
+		}
+		
+		Entity Carrinho{
+			aggregateRoot
+			
+			-CarrinhoId id
+			float valorTotal
+			-List<Item>itens
+		}
+		
+		ValueObject CarrinhoId{
+			int id
+		}
+		
+		ValueObject Item{
+			int quantidade
+			-ProdutoId produto
+			float valorUnitario
+			-CupomCodigo cupom
+		}
+	}
+	
+	Aggregate Compra{
+		Service CompraService{
+			void realizarCompra(@CompraId compraId);
+		}
+		
+		Entity Compra{
+			aggregateRoot
+			
+			 -CompraId id
+    		float frete
+    		-CarrinhoId id
+    		-Endereco enderecoEntrega
+			-Cartao pagamento
+		}
+		
+		ValueObject CompraId{
+			int id
+		}
+	}
+	
+	Aggregate Cupom{
+		Entity Cupom{
+			aggregateRoot
+			
+ 			-CupomCodigo id
+    		-Periodo periodoValidade
+    		int porcentagemDesconto
+    		-List<CategoriaId> categorias
+    		-List<ProdutoId> produtos
+		}
+		
+		ValueObject CupomCodigo{
+			int id
+		}
+		
+		ValueObject Periodo{
+    		LocalDate inicio
+			LocalDate fim
+		}
+	}
+}
