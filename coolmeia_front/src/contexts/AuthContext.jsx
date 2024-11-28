@@ -8,15 +8,17 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  const login = (cpf) => {
-    const userData = { cpf };
+  const login = (cpf, nome) => {
+    const userData = { cpf, nome }; // Inclui CPF e nome
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('user', JSON.stringify(userData)); // Salva todo o objeto no localStorage
+    localStorage.setItem('userName', nome); // Salva o nome separadamente
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('userName');
   };
 
   return (

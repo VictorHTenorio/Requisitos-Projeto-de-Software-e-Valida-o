@@ -13,26 +13,35 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      // Primeira requisição: autenticação do usuário
+      const loginResponse = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ cpf, senha: password }),
       });
-
-      if (response.ok) {
-        const message = await response.text();
-        console.log(message);
-        setErrorMessage('');
-        login(cpf); // Salva o CPF no contexto e localStorage
-        navigate('/');
-      } else if (response.status === 404) {
+  
+      if (loginResponse.ok) {
+        // Segunda requisição: obtém o nome do usuário
+        const userInfoResponse = await fetch(`http://127.0.0.1:8080/coolmeia/clientes/${cpf}`);
+        if (userInfoResponse.ok) {
+          const userInfo = await userInfoResponse.json();
+          const nome = userInfo.nome; // Extrai apenas o nome do usuário
+          console.log('Usuário autenticado:', nome);
+  
+          setErrorMessage('');
+          login(cpf, nome); // Passa CPF e nome para o contexto de autenticação
+          navigate('/'); // Redireciona para a página inicial
+        } else {
+          setErrorMessage('Erro ao buscar informações do usuário. Por favor, tente novamente.');
+        }
+      } else if (loginResponse.status === 404) {
         setErrorMessage('CPF não encontrado. Por favor, verifique o CPF digitado.');
       } else {
-        const errorData = await response.text().catch(() => 'Erro desconhecido.');
+        const errorData = await loginResponse.text().catch(() => 'Erro desconhecido.');
         setErrorMessage(errorData);
       }
     } catch (error) {
@@ -40,6 +49,7 @@ const LoginPage = () => {
       setErrorMessage('Erro de conexão. Por favor, tente novamente.');
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-amber-50">

@@ -11,6 +11,7 @@ import CouponRegistrationPage from './pages/CouponRegistrationPage';
 import CategoryRegistrationPage from './pages/CategoryRegistrationPage';
 import AdminMenuPage from './pages/AdminMenuPage';
 import { AuthProvider } from './contexts/AuthContext';
+import PurchaseSuccessPage from './pages/PurchaseSuccessPage';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/cupons" element={<CouponRegistrationPage />} />
         <Route path="/categorias" element={<CategoryRegistrationPage />} />
         <Route path="/admin" element={<AdminMenuPage />} />
+        <Route path="/compra-sucesso" element={<PurchaseSuccessPage />} />
       </Routes>
     </BrowserRouter>
     </AuthProvider>
