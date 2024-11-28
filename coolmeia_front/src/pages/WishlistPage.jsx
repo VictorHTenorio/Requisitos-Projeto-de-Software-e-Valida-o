@@ -4,10 +4,12 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { AlertCircle, X } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useNotification } from '../contexts/NotificationContext';
 import ProductDetailsPopup from '../components/ProductDetailsPopup';
 
 const WishlistPage = () => {
   const { user } = useAuth();
+  const { setHasLowStockItems } = useNotification();
   const navigate = useNavigate();
   const [wishlistItems, setWishlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +22,12 @@ const WishlistPage = () => {
 
     fetchWishlist();
   }, [user, navigate]);
+
+  useEffect(() => {
+    // Verifica se há itens com estoque baixo e atualiza o contexto
+    const hasLowStock = wishlistItems.some(item => item.quantidade < 10);
+    setHasLowStockItems(hasLowStock);
+  }, [wishlistItems, setHasLowStockItems]);
 
   const fetchWishlist = async () => {
     try {

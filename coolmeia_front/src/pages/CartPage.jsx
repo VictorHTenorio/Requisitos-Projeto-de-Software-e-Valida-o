@@ -8,6 +8,7 @@ import { CartItemList } from '../components/cart/CartItemList';
 import { AddressForm } from '../components/cart/AddressForm';
 import { PaymentForm } from '../components/cart/PaymentForm';
 import { OrderSummary } from '../components/cart/OrderSummary';
+import { useNotification } from '../contexts/NotificationContext';
 
 const CartPage = () => {
   const [cart, setCart] = useState(null);
@@ -15,6 +16,7 @@ const CartPage = () => {
   const [error, setError] = useState(null);
   const [activeStep, setActiveStep] = useState('cart');
   const [clientData, setClientData] = useState(null);
+  const { setHasLowStockItems } = useNotification();
   
   // Estados para cupom
   const [couponCode, setCouponCode] = useState('');
@@ -80,6 +82,25 @@ const CartPage = () => {
     }
   };
 
+  const checkLowStockItems = async () => {
+    if (!user) return;
+    
+    try {
+      const wishlistResponse = await fetch(`http://127.0.0.1:8080/coolmeia/clientes/${user.cpf}/lista-desejos`);
+      const wishlist = await wishlistResponse.json();
+
+      const productPromises = wishlist.map(item => 
+        fetch(`http://127.0.0.1:8080/coolmeia/produtos/${item.id}`).then(res => res.json())
+      );
+      
+      const products = await Promise.all(productPromises);
+      const hasLowStock = products.some(product => product.quantidade < 10);
+      setHasLowStockItems(hasLowStock);
+    } catch (error) {
+      console.error('Erro ao verificar estoque dos produtos:', error);
+    }
+  };
+
   const handleQuantityChange = async (produtoId, novaQuantidade) => {
     try {
       const response = await fetch(`http://127.0.0.1:8080/coolmeia/carrinhos/${clientData.carrinhoId.id}/itens/${produtoId}`, {
@@ -94,6 +115,7 @@ const CartPage = () => {
 
       if (!response.ok) throw new Error('Erro ao atualizar quantidade');
       fetchClientAndCart();
+      
     } catch (err) {
       setError(err.message);
     }
@@ -204,6 +226,7 @@ const CartPage = () => {
 
       if (!realizarResponse.ok) throw new Error('Erro ao finalizar compra');
       
+      await checkLowStockItems();
       navigate('/compra-sucesso');
     } catch (err) {
       setError(err.message);

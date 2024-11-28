@@ -12,11 +12,13 @@ import CategoryRegistrationPage from './pages/CategoryRegistrationPage';
 import AdminMenuPage from './pages/AdminMenuPage';
 import { AuthProvider } from './contexts/AuthContext';
 import PurchaseSuccessPage from './pages/PurchaseSuccessPage';
+import { NotificationProvider } from './contexts/NotificationContext';
 
 
 function App() {
   return (
     <AuthProvider>
+    <NotificationProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<NewProductsPage />} />
@@ -32,6 +34,7 @@ function App() {
         <Route path="/compra-sucesso" element={<PurchaseSuccessPage />} />
       </Routes>
     </BrowserRouter>
+    </NotificationProvider>
     </AuthProvider>
   );
 }

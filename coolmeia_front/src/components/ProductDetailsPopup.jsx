@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from '../contexts/NotificationContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Heart, ShoppingCart } from 'lucide-react';
 
@@ -13,6 +14,7 @@ const ProductDetailsPopup = ({ productId }) => {
   const [error, setError] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { setHasLowStockItems } = useNotification();
 
   // Função para carregar os detalhes do produto
   const fetchProductDetails = async () => {
@@ -33,6 +35,32 @@ const ProductDetailsPopup = ({ productId }) => {
       setLoading(false);
     }
   };
+
+   // Função para verificar produtos com baixo estoque na wishlist
+  const checkLowStockItems = async () => {
+    if (!user) return;
+    
+    try {
+      // Buscar lista de desejos
+      const wishlistResponse = await fetch(`http://127.0.0.1:8080/coolmeia/clientes/${user.cpf}/lista-desejos`);
+      const wishlist = await wishlistResponse.json();
+
+      // Buscar detalhes de cada produto na lista
+      const productPromises = wishlist.map(item => 
+        fetch(`http://127.0.0.1:8080/coolmeia/produtos/${item.id}`).then(res => res.json())
+      );
+      
+      const products = await Promise.all(productPromises);
+      
+      // Verificar se algum produto tem estoque baixo
+      const hasLowStock = products.some(product => product.quantidade < 10);
+      setHasLowStockItems(hasLowStock);
+    } catch (error) {
+      console.error('Erro ao verificar estoque dos produtos:', error);
+    }
+  };
+
+  
 
   // Verifica se o produto está na lista de desejos do usuário
   const checkWishlistStatus = async () => {
@@ -60,6 +88,7 @@ const ProductDetailsPopup = ({ productId }) => {
 
       if (response.ok) {
         setIsInWishlist(!isInWishlist);
+        await checkLowStockItems();
       }
     } catch (error) {
       console.error('Erro ao atualizar lista de desejos:', error);
