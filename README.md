@@ -17,7 +17,8 @@ No cenário de e-commerce, a jornada de compra do usuário envolve diversas etap
   </ul>
   </p>
   <br>
-  
+
+
   
 ### Funcionalidades
 <p align="justify">
@@ -27,7 +28,13 @@ No cenário de e-commerce, a jornada de compra do usuário envolve diversas etap
 - **Notificar baixo estoque de produto na lista de desejos**: informa o usuário, via e-mail, quando algum dos itens da sua lista de desejo está com pouca quantidade no estoque.
 - **Destacar produtos novos**: adiciona os produtos recém criados na página de destade do site.
 </p>
-  
+
+## Funcionalidades via interface
+As funcionalidades foram desenvolvidas via React, com backend em SpringBoot
+
+## Padrões de projeto
+Neste projeto foram adotadas os padrões de projeto Singleton e Observer
+
 ## Protótipo de Baixa Fidelidade
 <p align="justify">
 Protótipo de baixa fidelidade realizado no figma pode ser acessado com o link a seguir.
