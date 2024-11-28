@@ -31,14 +31,13 @@ const AllProductsPage = () => {
     fetchCategories();
   }, []);
 
-  // Carregar produtos com base na categoria selecionada
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const categoryId = selectedCategory || searchParams.get('category'); // Use a categoria da URL se estiver presente
         const url = categoryId
           ? `http://127.0.0.1:8080/coolmeia/produtos/categoria/${categoryId}`
-          : `http://127.0.0.1:8080/coolmeia/produtos`;
+          : `http://127.0.0.1:8080/coolmeia/produtos/todos`; // Nova URL para todos os produtos
         const response = await fetch(url);
         const data = await response.json();
 

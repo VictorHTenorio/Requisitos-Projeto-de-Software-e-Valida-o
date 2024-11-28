@@ -41,6 +41,7 @@ const Header = () => {
           <div className="flex-1 flex justify-end items-center space-x-8">
             <nav className="flex space-x-8">
               {!user && <Link to="/login" className="text-amber-400 hover:text-amber-300">Login</Link>}
+              <Link to="/produtos" className="text-amber-400 hover:text-amber-300">Comprar</Link>
               <Link to="/admin" className="text-amber-400 hover:text-amber-300">Admin</Link>
               <Link to="/wishlist" className="text-amber-400 hover:text-amber-300">WISHLIST</Link>
               {user && <button onClick={() => {
