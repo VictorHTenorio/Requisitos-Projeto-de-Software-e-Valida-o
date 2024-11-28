@@ -2,6 +2,7 @@ package loja.produto;
 
 import org.jmolecules.ddd.types.AggregateRoot;
 
+import comum.administracao.notificacao.GerenciadorNotificacoes;
 import loja.categoria.CategoriaId;
 
 import static org.apache.commons.lang3.Validate.notBlank;
@@ -130,15 +131,25 @@ public class Produto implements Cloneable, AggregateRoot<Produto, ProdutoId>{
         categorias.add(categoriaId);
     }
 	
-	public void diminuirQuantidade(int quantidadeCompra) {
-	    isTrue(quantidade - quantidadeCompra >= 0, "A quantidade comprada não pode ser maior que o estoque");
-	    this.quantidade -= quantidadeCompra;
-	}
-	
-	public void aumentarQuantidade(int quantidadeAdicionada) {
-	    isTrue(quantidadeAdicionada > 0, "A quantidade não pode ser negativa");
-	    this.quantidade -= quantidadeAdicionada;
-	}
+    public void diminuirQuantidade(int quantidadeCompra) {
+        isTrue(quantidade - quantidadeCompra >= 0, "A quantidade comprada não pode ser maior que o estoque");
+        this.quantidade -= quantidadeCompra;
+
+        if (this.quantidade < 10) {
+            String mensagem = String.format(
+                "Últimas %d peças!",
+                this.nome, 
+                this.quantidade
+            );
+            GerenciadorNotificacoes.getInstance()
+                .notificarObservadores(this.id.toString(), mensagem);
+        }
+    }
+    
+    public void aumentarQuantidade(int quantidadeAdicionada) {
+        isTrue(quantidadeAdicionada > 0, "A quantidade não pode ser negativa");
+        this.quantidade += quantidadeAdicionada;
+    }
 	
 	public boolean verificarPoucaQuantidade(int poucaQuantidade) {
 		isTrue(poucaQuantidade > 0, "A quantidade não pode ser menor que 0");

@@ -8,12 +8,10 @@ public class ListaNovidades {
     private static ListaNovidades instance;
     private List<ProdutoId> produtos;
     
-    // Construtor privado impede criação direta
     private ListaNovidades() {
         this.produtos = new ArrayList<>();
     }
     
-    // Método para obter a única instância
     public static synchronized ListaNovidades getInstance() {
         if (instance == null) {
             instance = new ListaNovidades();

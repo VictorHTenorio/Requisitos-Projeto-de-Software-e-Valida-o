@@ -6,12 +6,14 @@ import java.util.List;
 import org.jmolecules.ddd.types.AggregateRoot;
 
 import comum.administracao.cliente.Endereco;
+import comum.administracao.notificacao.GerenciadorNotificacoes;
+import comum.administracao.notificacao.Observer;
 import loja.carrinho.CarrinhoId;
 import loja.produto.ProdutoId;
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.apache.commons.lang3.Validate.notBlank;
 
-public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId> {
+public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId>, Observer {
     private final ClienteId id;
     private String nome;
     private String email;
@@ -124,15 +126,22 @@ public class Cliente implements Cloneable, AggregateRoot<Cliente, ClienteId> {
     public void removerCartao(Cartao cartao) {
         this.cartoes.remove(cartao);
     }
+    
+    @Override
+    public void receberNotificacao(String mensagem) {
+        System.out.println("Cliente " + this.nome + " recebeu notificação: " + mensagem);
+    }
 
     public void adicionarProdutoListaDeDesejos(ProdutoId produto) {
         notNull(produto, "O produto não pode ser nulo");
         this.listaDeDesejos.adicionarProduto(produto);
+        GerenciadorNotificacoes.getInstance().adicionarObservador(this, produto.toString());
     }
 
-    public void removerProdutoListaDeDesejos(ProdutoId produto) {
+    public void removerProdutoListaDeDejos(ProdutoId produto) {
         notNull(produto, "O produto não pode ser nulo");
         this.listaDeDesejos.removerProduto(produto);
+        GerenciadorNotificacoes.getInstance().removerObservador(this, produto.toString());
     }
 
     @Override
